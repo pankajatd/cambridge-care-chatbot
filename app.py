@@ -45,11 +45,11 @@ st.markdown(f"""
         height: 2.2rem !important;
     }}
 
-    /* Main Container - Laptop Compact Width & Clean Padding */
+    /* Main Container: Generous Full Laptop Layout by Default */
     .block-container {{
-        padding-top: 4rem !important;
-        padding-bottom: 1rem !important;
-        max-width: 740px !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        max-width: 860px !important;
     }}
 
     /* ---------------- NURSE UNIFORM HEADER CARD (SLEEK NAVBAR) ---------------- */
@@ -191,15 +191,15 @@ st.markdown(f"""
         vertical-align: middle;
     }}
 
-    /* ---------------- POPULAR INQUIRY PILLS: 100% STRICTLY HORIZONTAL ON ALL DEVICES (IDENTICAL) ---------------- */
+    /* ---------------- POPULAR INQUIRY PILLS: LAPTOP DEFAULT (FULL SIZED & ELEGANT) ---------------- */
     .suggestions-label {{
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 700;
         color: #64748B;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 5px;
-        margin-top: 1px;
+        margin-bottom: 6px;
+        margin-top: 2px;
     }}
 
     /* Row Container: NEVER WRAPS, ALWAYS 1 SINGLE HORIZONTAL LINE */
@@ -210,21 +210,21 @@ st.markdown(f"""
         flex-direction: row !important;
         flex-wrap: nowrap !important;
         align-items: stretch !important;
-        gap: 4px !important;
-        margin-bottom: 8px !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
         width: 100% !important;
     }}
 
-    /* ALL 4 Columns: ALWAYS Exactly 25% Width, NEVER 100% Vertical */
+    /* Laptop: 4 columns evenly across width */
     div[data-testid="stHorizontalBlock"] > div,
     [data-testid="stHorizontalBlock"] > div,
     .stHorizontalBlock > div,
     div[data-testid="column"],
     [data-testid="column"] {{
-        width: calc(25% - 3px) !important;
+        width: calc(25% - 6px) !important;
         min-width: 0 !important;
-        max-width: calc(25% - 3px) !important;
-        flex: 1 1 calc(25% - 3px) !important;
+        max-width: calc(25% - 6px) !important;
+        flex: 1 1 calc(25% - 6px) !important;
         padding: 0 !important;
         margin: 0 !important;
     }}
@@ -239,15 +239,15 @@ st.markdown(f"""
         background-color: #FFFFFF !important;
         color: #334155 !important;
         border: 1px solid #CBD5E1 !important;
-        border-radius: 12px !important;
-        padding: 3px 2px !important;
-        min-height: 32px !important;
+        border-radius: 14px !important;
+        padding: 6px 10px !important;
+        min-height: 38px !important;
         height: 100% !important;
         width: 100% !important;
         max-width: 100% !important;
-        font-size: clamp(8px, 2.2vw, 10.5px) !important;
+        font-size: 12px !important;
         font-weight: 600 !important;
-        line-height: 1.15 !important;
+        line-height: 1.2 !important;
         letter-spacing: 0 !important;
         white-space: normal !important;
         word-break: normal !important;
@@ -256,7 +256,7 @@ st.markdown(f"""
         align-items: center !important;
         justify-content: center !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
     }}
 
     div.stButton > button:hover {{
@@ -264,15 +264,15 @@ st.markdown(f"""
         color: #FFFFFF !important;
         border-color: #F66A71 !important;
         transform: translateY(-1px) !important;
-        box-shadow: 0 2px 6px rgba(246, 106, 113, 0.25) !important;
+        box-shadow: 0 2px 8px rgba(246, 106, 113, 0.28) !important;
     }}
 
-    /* Mobile Responsive Tweaks for Header and Spacing */
+    /* Mobile Responsive Adaptation (< 640px) */
     @media (max-width: 640px) {{
         .block-container {{
-            padding-top: 1.2rem !important;
-            padding-left: 6px !important;
-            padding-right: 6px !important;
+            padding-top: 1rem !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
             padding-bottom: 0.5rem !important;
         }}
 
@@ -298,7 +298,14 @@ st.markdown(f"""
             font-size: 11px !important;
         }}
 
-        /* Guarantee columns stay 25% horizontal on mobile */
+        /* On mobile, tighten column gaps and scale button font to fit 4 in a row */
+        div[data-testid="stHorizontalBlock"],
+        [data-testid="stHorizontalBlock"],
+        .stHorizontalBlock {{
+            gap: 4px !important;
+            margin-bottom: 8px !important;
+        }}
+
         div[data-testid="stHorizontalBlock"] > div,
         [data-testid="stHorizontalBlock"] > div,
         .stHorizontalBlock > div,
@@ -308,6 +315,13 @@ st.markdown(f"""
             min-width: 0 !important;
             max-width: calc(25% - 3px) !important;
             flex: 1 1 calc(25% - 3px) !important;
+        }}
+
+        div.stButton > button {{
+            font-size: clamp(8px, 2.2vw, 10px) !important;
+            padding: 3px 2px !important;
+            min-height: 30px !important;
+            border-radius: 10px !important;
         }}
     }}
 
