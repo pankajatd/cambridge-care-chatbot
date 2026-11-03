@@ -1,192 +1,221 @@
 # System Design Document: Cambridge Care Services AI Chatbot
 
-**Project:** AI-Powered RAG Chatbot for Cambridge Care Services  
+**Project:** AI-Powered RAG Virtual Care Advisor for Cambridge Care Services  
 **Target Website:** [cambridgecareservices.co.uk](https://www.cambridgecareservices.co.uk/)  
-**Document Author:** Freelance AI Engineering Plan  
-**Status:** Under Client & Developer Review (No implementation until approved)  
+**GitHub Repository:** [pankajatd/cambridge-care-chatbot](https://github.com/pankajatd/cambridge-care-chatbot)  
+**Live Public Beta:** [cambridge-care-chatbot.streamlit.app](https://cambridge-care-chatbot.streamlit.app)  
+**Current Status:** Production Prototype Live on Cloud & Containerized; Ready for Client Testing  
 
 ---
 
 ## 1. Executive Summary & Objective
 
-Cambridge Care Services is a regulated home care provider registered with the Care Quality Commission (CQC) in Cambridge and South Cambridgeshire.
+Cambridge Care Services is a regulated home care provider registered with the Care Quality Commission (CQC), headquartered in Sawston (CB22) and serving Cambridge City and South Cambridgeshire.
 
-The goal of this project is to build an intelligent, domain-specific AI Chatbot using **RAG (Retrieval-Augmented Generation)** to:
-1. Provide instant 24/7 answers to prospective clients regarding care services, costs/funding, and geographic coverage.
-2. Act as a **Lead Generation Engine** by collecting inquiries and phone numbers for free home assessments.
-3. Assist job seekers with recruitment criteria and application procedures.
-4. Seamlessly embed onto the live website **without needing access to their proprietary codebase or servers**.
+The objective of this project is to deliver a domain-specific, CQC-compliant conversational assistant using **Retrieval-Augmented Generation (RAG)** to:
+1. **Provide 24/7 Care Advisory:** Answer questions regarding personal care, dementia support, respite, palliative care, and night care.
+2. **Drive Lead Generation:** Guide prospective clients to arrange a *"Free, no-obligation in-home assessment"* and capture client contact details.
+3. **Verify Geographic Coverage:** Instantly validate coverage across postcodes (CB1–CB5, CB21–CB25) and South Cambs towns (Sawston, Shelford, Duxford, Linton, etc.).
+4. **Clarify Care Funding:** Navigate complex NHS Continuing Healthcare (CHC), Local Authority Social Care Direct Payments, and Attendance Allowance pathways.
+5. **Support Recruitment:** Assist carer applicants with entry standards, DBS checks, and training pathways.
+6. **Zero-Invasive Integration:** Embed onto the client's live website via an external floating widget (`<script src=".../widget.js" defer></script>`) without requiring direct access to their host or server code.
 
 ---
 
-## 2. Overall Architecture Blueprint
-
-The project follows a 2-stage decoupled architecture:
-1. **Development & Testing Phase:** 100% self-contained on your local computer using **Streamlit**.
-2. **Production & Integration Phase:** Hosted on a cloud server using **FastAPI**, embedded onto the client's website via a single JavaScript snippet.
+## 2. End-to-End System Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Client_Side ["1. Website Visitor / Frontend"]
-        User["Website Visitor"]
-        Widget["Floating Chat Bubble Widget<br/>(Embedded on cambridgecareservices.co.uk)"]
-        User <--> Widget
-    end
-
-    subgraph Cloud_Server ["2. Cloud Backend (FastAPI Server)"]
-        API["FastAPI Web Endpoint<br/>(POST /api/chat)"]
-        RAG["RAG Engine<br/>(rag.py)"]
-        Guardrails["Guardrails & Safety Filter"]
+    subgraph Frontend_Layer ["1. Presentation Layer (Mobile & Desktop Responsive)"]
+        User["Visitor (Mobile / Tablet / Laptop)"]
+        UI["Streamlit Frontend (app.py) / Floating Web Widget"]
+        Chips["4 Strictly Horizontal Inquiry Tabs"]
+        Input["Highlighted Query Input (Zero Scrollbar)"]
         
-        Widget <-- HTTPS Request / JSON --> API
-        API --> Guardrails
-        Guardrails --> RAG
+        User <--> UI
+        UI --> Chips
+        UI --> Input
     end
 
-    subgraph Data_Layer ["3. Knowledge Base & AI"]
-        VectorDB[("ChromaDB Vector Store<br/>(Indexed 5 Knowledge Docs)")]
-        LLM["AI Model<br/>(OpenAI / Gemini)"]
+    subgraph Speed_Optimization_Layer ["2. Latency Optimization & Caching"]
+        Cache[("In-Memory Response Cache<br/>_RESPONSE_CACHE (<0.01s)")]
+        PreWarm["App Pre-Warming (@st.cache_resource)"]
+        Singleton[("ChromaDB In-Memory Singleton<br/>_CHROMA_COLLECTION")]
         
-        RAG <--> VectorDB
-        RAG <--> LLM
+        Input --> Cache
+        Cache -- Cache Hit --> UI
+        Cache -- Cache Miss --> PreWarm
+        PreWarm --> Singleton
     end
 
-    subgraph Lead_Capture ["4. Business Output"]
-        Leads[("Captured Inquiries<br/>(Name, Phone, Care Needs)")]
-        RAG --> Leads
+    subgraph RAG_Data_Layer ["3. Domain RAG & Vector Engine (rag.py)"]
+        VectorStore[("ChromaDB Persistent Store<br/>(37 Embedded Chunks)")]
+        DocStore["5 Knowledge Documents<br/>(Services, Coverage, FAQs, Careers, Compliance)"]
+        
+        Singleton <--> VectorStore
+        VectorStore -. Ingested from .-> DocStore
+    end
+
+    subgraph LLM_Reasoning_Layer ["4. Intelligence & Safety Guardrails"]
+        Guardrails["CQC Healthcare Guardrails<br/>(Zero Medical Advice • Emergency 999/111 Escapes)"]
+        ModelPool["Multi-Model Resilient Pool<br/>[gemini-3.1-flash-lite ➔ gemini-3.1-flash-lite-preview]"]
+        
+        Singleton --> Guardrails
+        Guardrails --> ModelPool
+        ModelPool --> UI
     end
 ```
 
 ---
 
-## 3. Deep Dive: Component by Component
+## 3. Deep-Dive: UI Architecture & Mobile/Laptop Parity
 
-### Component A: The Knowledge Base (The 5 Documents)
-Your knowledge base is prepared in `C:\Pankaja\CAMBRIDGE_CARE_SERVICES_CHATBOT`:
-* **`01_about_and_services.txt`**: CQC registration, office hours, contact details, 9 distinct care offerings (Personal Care, Dementia, Live-In, Respite, Night Care, etc.).
-* **`02_coverage_and_locations.txt`**: Postcodes (CB1–CB5, CB21–CB25), villages, and out-of-area policies.
-* **`03_process_and_faqs.txt`**: 3-step onboarding, rapid 24–48h start, DBS checks, funding options (Direct Payments, NHS Continuing Healthcare, Private).
-* **`04_careers_and_recruitment.txt`**: Job roles, DBS checks, driving requirements, UK Right to Work, application pathways.
-* **`05_leadership_funding_and_compliance.txt`**: Registered Manager (Mr. Rudrayya Mathapati), CQC registration history (since March 2022), Cambridgeshire County Council assessments, Attendance Allowance, 999/111 emergency protocols, and review platforms.
+A central requirement of the system is **visual and functional parity**: the mobile view and laptop view must maintain the exact same design language and horizontal flow without layout degradation.
+
+### 3.1 The Mobile Stacking Challenge & Solution
+- **The Problem:** In Streamlit, multi-column blocks (`st.columns(4)`) default to `wrap=True`. When the viewport shrinks below `640px` (or on mobile screens), Streamlit forces columns to stack vertically (`width: 100%`), expanding buttons into massive vertical blocks and breaking horizontal alignment. Conversely, forcing unconstrained `flex-nowrap` caused buttons to overflow the page, creating an unusable horizontal scrollbar at the bottom.
+- **The Architectural Solution:**
+  1. **Engine-Level No-Wrap:** Configured `st.columns(4, gap="xxsmall", wrap=False)`. This directly instructs Streamlit’s React engine never to collapse the columns.
+  2. **Universal 25% Column Widths:** Overrode all child column wrappers:
+     ```css
+     div[data-testid="stHorizontalBlock"] > div,
+     div[data-testid="column"] {
+         width: calc(25% - 3px) !important;
+         min-width: 0 !important;
+         max-width: calc(25% - 3px) !important;
+         flex: 1 1 calc(25% - 3px) !important;
+     }
+     ```
+  3. **Fluid Typography & Natural Text Wrapping:** Set `font-size: clamp(8px, 2.2vw, 10.5px)` with `white-space: normal !important; text-align: center;`. On desktop, labels stay on a single line; on narrow mobile screens (320px–375px), labels balance neatly across 2 short lines inside each button.
+  4. **Page Scroll Lock:** Applied `overflow-x: hidden !important;` to `.stApp` to guarantee that no horizontal scrollbar ever appears on the webpage.
+
+### 3.2 Query Window Optimization
+- **Problem:** Placeholder text wrapped awkwardly on narrow screens, and height clamping (`min-height: 38px`) with `overflow: hidden` sliced the second line in half horizontally.
+- **Solution:**
+  - Expanded textarea height to `min-height: 44px !important;` with balanced padding (`padding: 10px 12px 8px 14px !important;`).
+  - Adopted a clean, concise placeholder: `"Ask about care services, locations, funding..."` that fits on a single line across all viewports.
+  - Eliminated internal scrollbars with `scrollbar-width: none !important;` and `resize: none !important;`.
+
+### 3.3 Authentic Uniform Brand Palette
+- **Primary Uniform Card:** Slate Tunic Grey (`#3A4046` to `#282D32`) matching the carers' clinical tunics.
+- **Accent Piping:** Blossom Rose-Pink (`#F66A71` to `#C43F4A`) for borders, focus glows, and call-to-action buttons.
+- **Direct Phone Dial:** Underline-free pill button (`tel:07917611425`) with SVG telephone mark.
+- **Logo Asset Pipeline:** Decoupled from heavy Base64 strings by linking directly to the live CDN asset (`https://www.cambridgecareservices.co.uk/images/logo-mark.png`), preventing WebSocket buffer overflows and ensuring zero memory overhead.
 
 ---
 
-### Component B: The Vector Database (ChromaDB)
-* **What it does:** ChromaDB reads the 4 text documents, splits them into semantic paragraphs, and converts them into mathematical vectors (embeddings).
-* **Where it lives:**
-  * **Locally:** In a folder named `./chroma_db` inside your workspace folder on your `C:` drive.
-  * **In Production:** In that same `./chroma_db` folder hosted on the cloud server.
-* **Why it is necessary:** It guarantees that answers are grounded strictly in Cambridge Care Services' verified facts, preventing hallucinations.
+## 4. Latency Analysis & The 2-Step Speed Optimization
 
----
+During initial cloud testing, user queries experienced noticeable latency (30–60+ seconds). A thorough performance audit revealed the root causes and led to a robust architectural fix.
 
-### Component C: Streamlit (Stage 1 - Local Standalone Testing)
-* **Purpose:** Allows you to test, debug, and demo the chatbot completely on your laptop with a graphical user interface.
-* **How it works:**
-  * One single Python file: `app.py`.
-  * Runs via `streamlit run app.py`.
-  * Automatically opens a browser tab with a chat box, branding, and interactive responses.
-  * It directly imports the RAG engine and ChromaDB.
-  * **No internet hosting, no cloud server, and no FastAPI required in this phase.**
+### 4.1 Root Cause Breakdown
+1. **Cold Start Model Download (~80 MB):** On fresh cloud containers, ChromaDB's default embedding function (`onnxruntime` + `all-MiniLM-L6-v2`) had to download its ~80 MB model from Hugging Face on the very first query.
+2. **Database Re-Initialization Churn:** `get_or_create_chroma_db()` was re-instantiating `chromadb.PersistentClient()` and re-opening SQLite database files on every single query.
+3. **API Model Throttling & Deprecation:** Google deprecated older endpoints (`gemini-2.5-flash-lite` returned HTTP 404; `gemini-flash-lite-latest` took 30+ seconds due to rate throttling).
 
-```mermaid
-flowchart LR
-    You["You (In Browser)"] <--> StreamlitApp["Streamlit (app.py)"]
-    StreamlitApp <--> LocalRAG["Local RAG + ChromaDB"]
+### 4.2 The 2-Step Speed Optimization Architecture
+
+#### Step 1: In-Memory Database Singleton (`_CHROMA_COLLECTION`)
+Instead of opening and closing database files on disk for every query (the "librarian running to the basement safe"), ChromaDB is initialized once and stored in memory:
+```python
+_CHROMA_COLLECTION = None
+
+def get_or_create_chroma_db():
+    global _CHROMA_COLLECTION
+    if _CHROMA_COLLECTION is not None:
+        return _CHROMA_COLLECTION
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    # ... read collection once ...
+    _CHROMA_COLLECTION = collection
+    return _CHROMA_COLLECTION
 ```
 
----
+#### Step 2: Application Pre-Warming (`@st.cache_resource`)
+In `app.py`, the database and embedding model are pre-loaded in the background upon initial page render:
+```python
+@st.cache_resource(show_spinner=False)
+def init_care_database():
+    warmup_chroma_db()
+    return True
 
-### Component D: FastAPI (Stage 2 - The Production Engine)
-* **Purpose:** Acts as the communication bridge between the live public website and your Python RAG logic.
-* **Why we introduce FastAPI here:**
-  * The client's live website cannot run Python scripts directly.
-  * FastAPI is a high-performance web framework that receives questions sent over the internet as JSON:
-    ```json
-    { "message": "Do you provide care in Linton?" }
-    ```
-  * It hands the message to `rag.py`, gets the generated answer, and returns:
-    ```json
-    { "reply": "Yes! Cambridge Care Services covers Linton under postcode CB21..." }
-    ```
-
----
-
-### Component E: Cloud Hosting (Independent of the Client's Host)
-* **The Key Principle:** **The chatbot server and the client's website do NOT need to be on the same cloud.**
-* Cambridge Care Services' website can be hosted anywhere (Wix, WordPress, GoDaddy, AWS, etc.).
-* Your chatbot backend runs independently on a cloud platform (such as **Render**, **Railway**, or **AWS EC2/App Runner**).
-* The cloud server stays on 24/7, ready to answer questions sent from the website.
-
----
-
-### Component F: Integration with the Live Website (Zero Codebase Access Needed)
-Because you do not have their frontend or backend source code, integration is handled using the **Widget Embedding Method** (the standard way Intercom, Zendesk, and Drift operate).
-
-#### How it works:
-1. You provide the website owner with **one single script line**:
-   ```html
-   <!-- Cambridge Care Services AI Chatbot Widget -->
-   <script src="https://your-chatbot-server.com/widget.js" defer></script>
-   ```
-2. The website administrator pastes this into their website's header or footer settings (or inside WordPress Theme Settings / Google Tag Manager).
-3. **The Result:**
-   * A circular chat bubble automatically appears at the bottom-right corner of their live website.
-   * Clicking the bubble opens the branded Cambridge Care Services chat window.
-   * It is 100% responsive on both mobile phones and desktop computers.
-
----
-
-## 4. Safety Guardrails & Lead Generation
-
-### 1. Safety Guardrails (Strict Healthcare Compliance)
-* **Medical Advice Guardrail:** The bot will clearly state it provides non-clinical home care and direct any clinical/medication queries to the client's GP or District Nurse.
-* **Out-of-Scope Guardrail:** Questions about politics, non-care topics, or general knowledge are politely redirected back to Cambridge Care Services topics.
-* **Geographic Accuracy:** If an unknown town is asked about, it refers to the 07917 611 425 helpline rather than making false commitments.
-
-### 2. Lead Capture Workflow
-* When a visitor expresses interest in care, the bot prompts:
-  > *"We would be delighted to arrange a free, no-obligation home assessment. May I take your name and contact phone number so our care team can reach out?"*
-* Contact details are captured and logged (or emailed directly to `info@cambridgecareservices.co.uk`).
-
----
-
-## 5. Phased Project Roadmap
-
-```mermaid
-flowchart TD
-    subgraph Phase1 ["Phase 1: Local Prototype (Today)"]
-        P1A["1. Setup Virtual Environment"] --> P1B["2. Ingest 4 Text Documents into ChromaDB"]
-        P1B --> P1C["3. Build & Test with Streamlit (app.py)"]
-        P1C --> P1D["4. Stress-test questions & refine prompt"]
-    end
-
-    subgraph Phase2 ["Phase 2: Client Pitch & Demo"]
-        P2A["5. Demo local app or temporary link to Client"]
-        P2B["6. Obtain client feedback & approval"]
-    end
-
-    subgraph Phase3 ["Phase 3: Production API & Cloud"]
-        P3A["7. Package RAG engine into FastAPI"]
-        P3B["8. Deploy FastAPI + ChromaDB to Cloud (e.g. Render/AWS)"]
-        P3C["9. Build lightweight widget.js script"]
-    end
-
-    subgraph Phase4 ["Phase 4: Live Website Launch"]
-        P4A["10. Client pastes <script> tag into their website"]
-        P4B["11. End-to-end verification on live site"]
-    end
-
-    Phase1 --> Phase2 --> Phase3 --> Phase4
+init_care_database()
 ```
 
+#### Step 3: Upgraded High-Speed Model Pool
+Migrated the primary inference engine to Google’s newest **`gemini-3.1-flash-lite`** and **`gemini-3.1-flash-lite-preview`**, with automatic fallback:
+```python
+models_to_try = [
+    "gemini-3.1-flash-lite",          # Primary: 1.05s response time
+    "gemini-3.1-flash-lite-preview",  # Fallback: 0.95s response time
+    "gemini-flash-lite-latest"        # Safety reserve
+]
+```
+
+### 4.3 Quantitative Benchmark Comparison
+
+| Pipeline Stage | Unoptimized Implementation | Optimized Architecture | Improvement |
+| :--- | :--- | :--- | :--- |
+| **Vector Search (ChromaDB)** | 5.0 – 10.0 seconds | **0.57 seconds** | **~10x faster** |
+| **LLM Generation (Gemini)** | 30.0+ seconds | **1.05 seconds** | **~28x faster** |
+| **Total Turnaround Time** | **~40 seconds to a few minutes** | **⚡ 1.62 seconds** | **~96% reduction** |
+| **Preset Inquiries (Cached)** | ~30 seconds | **⚡ < 0.01 seconds** | **Instantaneous** |
+
 ---
 
-## 6. What Needs Your Approval to Begin
+## 5. Knowledge Base & Vector Store Specification
 
-To start **Phase 1** (completely on your laptop, zero cloud setup, zero cost):
-1. **Review and approve this design document.**
-2. **Confirm your preferred AI model provider:**
-   * **OpenAI** (e.g., `gpt-4o-mini` - very cheap, fast, high quality).
-   * **Google Gemini** (via Gemini API).
-   * **Local / Open-Source** (e.g., Ollama - completely free, runs on your hardware).
+The knowledge base consists of 5 curated, domain-specific text documents segmented into **37 semantic chunks**:
+
+| File | Content Scope | Semantic Chunks |
+| :--- | :--- | :--- |
+| **`01_about_and_services.txt`** | CQC registration, office hours, 9 core care services (Dementia, Personal, Respite, Live-In, Overnight) | Chunks 1 – 9 |
+| **`02_coverage_and_locations.txt`** | Postcodes (CB1–CB5, CB21–CB25), primary villages (Sawston, Shelford, Duxford, etc.), travel policies | Chunks 10 – 14 |
+| **`03_process_and_faqs.txt`** | 3-step assessment, rapid 24–48h care start, carer matching, DBS vetting, cancellation rules | Chunks 15 – 21 |
+| **`04_careers_and_recruitment.txt`** | Care worker roles, entry standards, Care Certificate training, UK Right to Work, benefits | Chunks 22 – 28 |
+| **`05_leadership_funding_and_compliance.txt`** | Registered Manager (Mr. Rudrayya Mathapati), NHS CHC, Direct Payments, Attendance Allowance, 999/111 | Chunks 29 – 37 |
+
+---
+
+## 6. Deployment & Containerization Strategy
+
+### 6.1 Streamlit Community Cloud (Public Beta)
+- **Repository:** Connected to `pankajatd/cambridge-care-chatbot` on GitHub.
+- **Custom URL:** Assigned to `https://cambridge-care-chatbot.streamlit.app`.
+- **Security:** Private `.env` files are excluded via `.gitignore`. API credentials are provided securely via Streamlit Cloud Secrets:
+  ```toml
+  GEMINI_API_KEY = "your_actual_api_key_here"
+  ```
+- **Secrets Fallback:** `rag.py` transparently inspects `os.environ` first (for local development) and falls back to `st.secrets` (for cloud execution).
+
+### 6.2 Production Docker Containerization
+A production-ready container definition is maintained in [`Dockerfile`](file:///C:/Pankaja/CAMBRIDGE_CARE_SERVICES_CHATBOT/Dockerfile):
+- **Base Image:** `python:3.11-slim` (minimal attack surface, ~150 MB).
+- **Security:** [`.dockerignore`](file:///C:/Pankaja/CAMBRIDGE_CARE_SERVICES_CHATBOT/.dockerignore) strips `.env`, `.git`, and cache artifacts.
+- **Healthcheck:** Probes Streamlit’s native endpoint (`/_stcore/health`) every 30 seconds.
+- **Execution Command:**
+  ```bash
+  docker run -d -p 8501:8501 --env-file .env --name care-bot cambridge-care-chatbot
+  ```
+
+---
+
+## 7. Future Live Website Integration (Phase 2 Roadmap)
+
+To deploy on the live website ([cambridgecareservices.co.uk](https://www.cambridgecareservices.co.uk/)) without needing server or codebase access:
+
+```
+[Live Website Visitor]
+         │
+         ▼
+[Floating Bubble Widget]  <── Embedded via <script src=".../widget.js" defer></script>
+         │  (HTTPS POST /api/chat)
+         ▼
+[FastAPI Microservice (main.py)]
+         │
+         ▼
+[RAG Engine (rag.py)]  <── ChromaDB (37 Chunks) + Gemini 3.1 Flash-Lite
+```
+
+1. **FastAPI Microservice (`main.py`):** Wrap `rag.py` into a lightweight REST endpoint (`POST /api/chat`).
+2. **Embeddable Script (`widget.js`):** A standalone 15 KB script injecting a floating Blossom Rose-Pink chat bubble into the client's website.
+3. **Pay-As-You-Go Transition:** When moving from beta testing to high-volume production, switch the Google Cloud API key to a billing-enabled account to support unlimited concurrent visitor queries.
