@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# Environment & Secrets (NEVER bake API keys into Docker images)
+.env
+.env.*
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Documentation & Reports
+*.pdf
+mobile_test.png
+edge_test.png
