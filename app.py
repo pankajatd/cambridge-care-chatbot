@@ -11,16 +11,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Helper function to convert local image to Base64 for guaranteed browser rendering
-def get_base64_image(image_path):
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as f:
-            return base64.b64encode(f.read()).decode("utf-8")
-    return ""
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-logo_b64 = get_base64_image(os.path.join(BASE_DIR, "logo-mark.png"))
-
 # Nurse Uniform Palette (Slate Tunic Grey & Rose-Pink Piping from official hero photo)
 st.markdown(f"""
 <style>
@@ -505,12 +495,14 @@ st.markdown(f"""
         height: 36px !important;
     }}
 </style>
+""", unsafe_allow_html=True)
 
+st.markdown("""
 <div class="header-card">
     <div class="header-top">
         <div class="brand-group">
             <div class="brand-logo-container">
-                <img class="brand-logo-img" src="data:image/png;base64,{logo_b64}" alt="Cambridge Care Services Logo" />
+                <img class="brand-logo-img" src="https://www.cambridgecareservices.co.uk/images/logo-mark.png" alt="Cambridge Care Services Logo" />
             </div>
             <div>
                 <div class="brand-name">Cambridge Care Services</div>
