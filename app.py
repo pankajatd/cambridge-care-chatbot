@@ -1,17 +1,9 @@
 import os
 import base64
 import streamlit as st
-from rag import ask_cambridge_care_bot, warmup_chroma_db
+from rag import ask_cambridge_care_bot
 
-# Pre-warm vector database in memory so initial user queries are fast
-@st.cache_resource(show_spinner=False)
-def init_care_database():
-    warmup_chroma_db()
-    return True
-
-init_care_database()
-
-# Set professional page title and favicon
+# Set professional page title and favicon (MUST BE FIRST STREAMLIT COMMAND)
 st.set_page_config(
     page_title="Cambridge Care Services Assistant",
     page_icon="🌸",
@@ -31,6 +23,20 @@ st.markdown(f"""
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         color: #242A2E;
         overflow-x: hidden !important;
+    }}
+
+    /* Completely hide Streamlit branding, footer, and watermarks */
+    footer,
+    footer:after,
+    .stFooter,
+    div[data-testid="stFooter"],
+    #MainMenu,
+    div[data-testid="stDecoration"],
+    div[data-testid="stStatusWidget"] {{
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        opacity: 0 !important;
     }}
 
     /* Streamlit top header cleanup */
