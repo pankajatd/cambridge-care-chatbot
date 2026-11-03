@@ -1,0 +1,276 @@
+======================================================================
+CAMBRIDGE CARE SERVICES - ALL 37 KNOWLEDGE BASE CHUNKS
+Generated in sequential order from the 5 source .txt documents
+======================================================================
+
+CHUNK #1  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+==================================================
+DOCUMENT: CAMBRIDGE CARE SERVICES - ABOUT & ALL SERVICES
+==================================================
+
+CHUNK #2  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+ABOUT THE COMPANY:
+Cambridge Care Services is a regulated home care provider registered with the Care Quality Commission (CQC) operating across Cambridge and South Cambridgeshire.
+- Office Address: 15 Deal Grove, Sawston, Cambridge, Cambridgeshire, CB22 3DR
+- Office Hours: Monday to Friday 09:30 - 21:00, Saturday 10:00 - 15:00.
+- Out of Hours: 24/7 Emergency support line available for active clients and staff.
+- Telephone: 07917 611 425 / 07878 455347
+- Email: info@cambridgecareservices.co.uk
+
+CHUNK #3  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+PHILOSOPHY OF CARE:
+- Person-Centered Approach: Every individual receives a bespoke care plan created through collaboration with the client and family.
+- No Forced Routines: Visits are unhurried and structured around the client's preferred wake-up times, meal habits, and lifestyle preferences.
+- Familiar Carers: Care teams are kept small so clients see consistent, familiar faces rather than rotating strangers.
+
+CHUNK #4  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+1. PERSONAL CARE:
+- Assistance with daily morning, afternoon, and evening routines.
+- Washing, bathing, showering, and personal hygiene care.
+- Dressing, grooming, and oral hygiene.
+- Continence management, toilet assistance, and catheter/stoma care support.
+- Assistance with mobility, transfer ring, and safe positioning.
+- Prompting or assisting with prescribed medication schedules.
+
+CHUNK #5  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+2. LIVE-IN CARE:
+- A full-time, dedicated carer living in the home to provide 24/7 peace of mind.
+- A direct alternative to residential care homes, allowing clients to stay in their familiar environment.
+- Covers meal preparation, housekeeping, companionship, night monitoring, and personal care.
+- Tailored for individuals with progressive conditions, mobility challenges, or high support needs.
+
+CHUNK #6  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+3. DEMENTIA CARE:
+- Specialist support for individuals living with Alzheimer's disease, vascular dementia, Lewy body dementia, or frontotemporal dementia.
+- Focus on maintaining familiar home routines, promoting orientation, and providing gentle reassurance.
+- De-escalation strategies for agitation, anxiety, memory loss, or nocturnal confusion.
+- Stimulation activities, cognitive prompts, and safe engagement.
+
+CHUNK #7  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+4. COMPLEX CARE & POST-HOSPITAL DISCHARGE:
+- Care for high-dependency needs, severe physical disabilities, stroke recovery, or progressive neurological conditions.
+- Reablement support following hospital discharge to prevent readmission.
+- Package-specific staff training tailored to the individual’s clinical and physical management plan.
+- Collaboration with local District Nurses, Occupational Therapists (OTs), and GPs.
+
+CHUNK #8  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+5. RESPITE CARE:
+- Short-term or temporary home care cover for primary family carers.
+- Can range from a few hours a week to several weeks of live-in cover while family members go on holiday or rest.
+- Prevents caregiver burnout while maintaining continuity for the care recipient.
+
+CHUNK #9  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+6. NIGHT CARE:
+- Waking Night Support: Carers stay awake throughout the night to assist with frequent transfers, medication, repositioning, or toilet visits.
+- Sleeping Night Support: Carers sleep in a spare room and are available up to 2 times during the night for unexpected needs or reassurance.
+
+CHUNK #10  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+7. COMPANIONSHIP CARE:
+- Social interaction, emotional support, and friendly conversation.
+- Accompanied visits to local shops, cafes, doctors, or community groups in Cambridge.
+- Assistance with administrative tasks, reading mail, and maintaining hobbies.
+
+CHUNK #11  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+8. SUPPORTED LIVING & INDEPENDENCE:
+- Practical support for adults with learning disabilities, physical disabilities, or mental health needs.
+- Encourages life skill development including cooking, budget management, and community access.
+
+CHUNK #12  |  SOURCE: 01_about_and_services.txt
+----------------------------------------------------------------------
+9. END-OF-LIFE (PALLIATIVE) CARE:
+- Compassionate, dignified support focusing on comfort, pain management assistance, and emotional care.
+- Support for both the individual and their family members during the final stages of life.
+
+CHUNK #13  |  SOURCE: 02_coverage_and_locations.txt
+----------------------------------------------------------------------
+==================================================
+DOCUMENT: GEOGRAPHIC COVERAGE & REGIONAL PATHWAYS
+==================================================
+
+CHUNK #14  |  SOURCE: 02_coverage_and_locations.txt
+----------------------------------------------------------------------
+CORE SERVICE REGION:
+Cambridge City and South Cambridgeshire district.
+
+CHUNK #15  |  SOURCE: 02_coverage_and_locations.txt
+----------------------------------------------------------------------
+PRIMARY POSTCODES COVERED:
+- CB1: Cambridge City Center, Cherry Hinton, Teversham
+- CB2: Cambridge South, Trumpington, Addenbrooke's area
+- CB3: Cambridge West, Girton
+- CB4: Cambridge North, Chesterton, Arbury, Milton
+- CB5: Cambridge East, Barnwell
+- CB21: Fulbourn, Linton, Balsham, Abington
+- CB22: Sawston, Great Shelford, Little Shelford, Stapleford, Babraham, Whittlesford, Duxford, Pampisford
+- CB23: Cambourne, Bar Hill, Histon, Impington
+- CB24: Cottenham, Waterbeach
+- CB25: Burwell, Bottisham
+
+CHUNK #16  |  SOURCE: 02_coverage_and_locations.txt
+----------------------------------------------------------------------
+TOWNS & VILLAGES SPECIFICALLY LISTED:
+- Cambridge
+- Sawston (Office Base)
+- Trumpington
+- Cherry Hinton
+- Great Shelford & Little Shelford
+- Stapleford
+- Babraham & Pampisford
+- Whittlesford & Duxford
+- Linton & Fulbourn
+
+CHUNK #17  |  SOURCE: 02_coverage_and_locations.txt
+----------------------------------------------------------------------
+OUT-OF-AREA INQUIRIES POLICY:
+The listed coverage boundaries are flexible. If a client resides in neighboring areas such as Royston, Haverhill, Newmarket, or Ely, families are encouraged to call 07917 611 425. The care management team will assess staffing availability and may extend coverage where possible.
+
+CHUNK #18  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+==================================================
+DOCUMENT: CLIENT ONBOARDING, PROCESS & FAQS
+==================================================
+
+CHUNK #19  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+STEP 1: INITIAL CONSULTATION
+- An unhurried phone conversation or email query with the care management team.
+- Discussion of immediate needs, budget/funding considerations, and scheduling goals.
+- No obligation or pushy sales tactics.
+
+CHUNK #20  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+STEP 2: FREE HOME CARE ASSESSMENT
+- An in-person visit by a Care Manager to the client's home in Cambridge/South Cambs.
+- Detailed assessment of physical mobility, medical history, care preferences, daily routines, and home safety hazards.
+- Consultation with family members and health professionals (if applicable).
+
+CHUNK #21  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+STEP 3: PERSONALIZED CARE PLAN & CARER MATCHING
+- A formal Care Plan is drafted and agreed upon by the family.
+- Carers are carefully matched based on qualifications, personality traits, shared interests, and language preferences.
+- Scheduled care visits begin, with regular 30-day, 60-day, and quarterly reviews.
+
+CHUNK #22  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+Q: How quickly can care start?
+A: Urgent care or post-hospital discharge support can often be arranged within 24 to 48 hours following a completed assessment.
+
+CHUNK #23  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+Q: Are your carers background checked?
+A: Yes. Every staff member undergoes an Enhanced DBS (Disclosure and Barring Service) check, full employment history verification, and minimum 2 professional reference checks prior to placement.
+
+CHUNK #24  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+Q: How is care funded?
+A: Care can be funded through Direct Payments (Local Authority social care funding), Personal Health Budgets (NHS Continuing Healthcare), or privately paid directly by the client or family.
+
+CHUNK #25  |  SOURCE: 03_process_and_faqs.txt
+----------------------------------------------------------------------
+Q: What happens if our regular carer is sick or on leave?
+A: Cambridge Care Services provides guaranteed replacement cover using an familiar backup carer who has been briefed on the client's Care Plan.
+
+CHUNK #26  |  SOURCE: 04_careers_and_recruitment.txt
+----------------------------------------------------------------------
+==================================================
+DOCUMENT: CAREERS, RECRUITMENT & STAFF REQUIREMENTS
+==================================================
+
+CHUNK #27  |  SOURCE: 04_careers_and_recruitment.txt
+----------------------------------------------------------------------
+JOB ROLES REGULARLY RECRUITED:
+1. Domiciliary Care Assistant / Home Carer
+2. Live-In Carer (Full-time resident support)
+3. Night Care Assistant (Waking Night & Sleeping Night)
+4. Senior Care Assistant / Field Care Supervisor
+5. Complex Support Worker
+
+CHUNK #28  |  SOURCE: 04_careers_and_recruitment.txt
+----------------------------------------------------------------------
+MINIMUM ENTRY REQUIREMENTS FOR APPLICANTS:
+- Right to Work in the UK: Must possess valid UK work authorization (settled status, valid visa, or citizenship).
+- Background Check: Must undergo and pass an Enhanced DBS check.
+- Driving Status: A full UK driving license and access to a reliable vehicle is preferred for community visits, though walking/cycling routes exist for central Cambridge roles.
+- Experience Level: Previous NVQ / QCF Level 2 or 3 in Health and Social Care is desirable, but unexperienced candidates with strong empathy and dedication are considered as full induction training is provided.
+
+CHUNK #29  |  SOURCE: 04_careers_and_recruitment.txt
+----------------------------------------------------------------------
+STAFF BENEFITS & PERKS:
+- Competitive hourly pay rates with higher weekend and Bank Holiday rates.
+- Paid mileage allowance for travel between client homes.
+- Free comprehensive Care Certificate induction training and continuous professional development (CPD).
+- Flexible working hours (full-time, part-time, weekend-only, or evening shifts available).
+- Ongoing mentorship, shadow shifts with senior carers, and 24/7 staff emergency helpline support.
+
+CHUNK #30  |  SOURCE: 04_careers_and_recruitment.txt
+----------------------------------------------------------------------
+HOW TO APPLY:
+Applicants can apply directly on the Cambridge Care Services website careers page, email their updated CV to info@cambridgecareservices.co.uk, or contact recruitment directly on 07917 611 425.
+
+CHUNK #31  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+==================================================
+DOCUMENT: LEADERSHIP, FUNDING PATHWAYS & CLINICAL COMPLIANCE
+==================================================
+
+CHUNK #32  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+1. LEADERSHIP & CQC REGISTRATION:
+- Registered Manager: Mr. Rudrayya Mathapati.
+  * Holds legal responsibility for the quality and safety of the service under Care Quality Commission (CQC) regulations.
+  * Clinical Background: Extensive nursing and leadership experience as a Nurse Team Leader in both hospital and community healthcare settings.
+  * Expertise: Clinical risk management, complex care planning, safeguarding protocols, and multidisciplinary coordination with NHS District Nurses, Occupational Therapists, and GPs.
+- CQC Registration Date: Officially registered since 17 March 2022.
+- Legal Office Base: 15 Deal Grove, Sawston, Cambridge, CB22 3DR.
+
+CHUNK #33  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+2. TEAM STRUCTURE & QUALITY ASSURANCE:
+- Care Coordinators: Office-based team managing client communication, scheduling carer rotas, and implementing same-day care plan updates when needs change.
+- Field Supervisors: Mobile supervisors operating across Cambridge and South Cambridgeshire villages conducting home assessments, carer supervisions, and unannounced quality spot checks.
+- Carers: Vetted via enhanced DBS and professional references, trained through shadow shifts and induction, and matched with clients based on care needs, personality, and shared language.
+
+CHUNK #34  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+3. DETAILED FUNDING PATHWAYS FOR HOME CARE:
+- Cambridgeshire County Council Funding: Families can request a free Care Needs Assessment and Financial Assessment from Cambridgeshire County Council. Council funding may cover partial or full care costs.
+- Direct Payments & Personal Budgets: Clients eligible for council support can receive direct payments to choose Cambridge Care Services directly rather than council-allocated providers.
+- NHS Continuing Healthcare (CHC): For individuals with primarily health/clinical needs (e.g. advanced dementia, stroke recovery, palliative care), the NHS covers 100% of care costs regardless of personal savings.
+- Attendance Allowance & State Benefits:
+  * Attendance Allowance: A non-means-tested UK benefit for individuals over State Pension age who require help with personal care. Does not depend on savings.
+  * Carer's Allowance: Financial support for family members providing substantial unpaid care.
+- Independent Advice: Families are encouraged to consult independent advisory bodies including Age UK, Citizens Advice, or accredited later-life financial advisers.
+
+CHUNK #35  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+4. PRICING POLICY & TRANSPARENCY:
+- Bespoke Pricing: Cambridge Care Services does not publish arbitrary headline rates because costs depend on visit duration, visit frequency, specialist skill level (e.g. dementia vs complex nursing support), and night/live-in requirements.
+- Pricing Guarantee: All care costs are delivered as a clear, written, itemized quotation following the free in-home assessment. No hidden fees or unannounced price increases.
+
+CHUNK #36  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+5. EMERGENCY & CLINICAL PROTOCOL (AI SAFETY):
+- Emergency Services: Cambridge Care Services is a regulated home care provider, not an acute emergency medical service.
+- Immediate Danger / Life-Threatening Situations: Always call 999 immediately (e.g. chest pain, severe fall, sudden collapse, breathing difficulty).
+- Urgent Non-Emergency Health Advice: Call NHS 111.
+- Care Team Support: Active clients and families have access to a 24/7 out-of-hours phone line (07917 611 425 / 07878 455347) for urgent scheduling or care-related updates.
+
+CHUNK #37  |  SOURCE: 05_leadership_funding_and_compliance.txt
+----------------------------------------------------------------------
+6. REVIEWS, CREDIBILITY & REFERENCES:
+- Growth: Built primarily through community word-of-mouth and healthcare recommendations across South Cambridgeshire.
+- Verified Review Platforms: Google Reviews and homecare.co.uk.
+- Family References: Prospective families can request an introductory call to speak with families currently supported by Cambridge Care Services.
+
