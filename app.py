@@ -621,8 +621,8 @@ active_query = preset_query or user_input
 # Non-blocking background warm-up: prepares database in RAM without delaying page display
 def _background_warmup():
     try:
-        from rag import get_collection
-        get_collection()
+        from rag import warmup_chroma_db
+        warmup_chroma_db()
     except Exception:
         pass
 
@@ -647,4 +647,3 @@ if active_query:
         "question": active_query,
         "answer": response
     })
-    st.rerun()
