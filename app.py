@@ -14,29 +14,42 @@ st.set_page_config(
 # Nurse Uniform Palette (Slate Tunic Grey & Rose-Pink Piping from official hero photo)
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
-    /* Global Body & Background - NO HORIZONTAL SCROLL ON PAGE */
+    /* Global Body & Background - Fast native typography, zero blocking network roundtrips */
     html, body, .stApp {{
         background: #F8F9FA;
         background: linear-gradient(180deg, #FAFBFC 0%, #F1F4F7 100%);
-        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         color: #242A2E;
         overflow-x: hidden !important;
     }}
 
-    /* Completely hide Streamlit branding, footer, and watermarks */
+    /* Completely hide Streamlit branding, footer, watermarks, and Community Cloud badges */
     footer,
     footer:after,
     .stFooter,
     div[data-testid="stFooter"],
     #MainMenu,
+    header[data-testid="stHeader"] .stDeployButton,
     div[data-testid="stDecoration"],
-    div[data-testid="stStatusWidget"] {{
+    div[data-testid="stStatusWidget"],
+    div[data-testid="stToolbarActions"],
+    [data-testid="manage-app-button"],
+    #manage-app-button,
+    [class*="viewerBadge"],
+    div[class*="viewerBadge"],
+    a[class*="viewerBadge"],
+    .viewerBadge_container__1QSob,
+    .styles_viewerBadge__1yB5_,
+    .viewerBadge_link__1S137,
+    .viewerBadge_text__1JaDK,
+    div[class*="ProfileBadge"],
+    .stDeployButton {{
         display: none !important;
         visibility: hidden !important;
         height: 0 !important;
+        width: 0 !important;
         opacity: 0 !important;
+        pointer-events: none !important;
     }}
 
     /* Streamlit top header cleanup */
