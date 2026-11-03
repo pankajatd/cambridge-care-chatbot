@@ -1,7 +1,7 @@
 import os
 import base64
+import threading
 import streamlit as st
-from rag import ask_cambridge_care_bot
 
 # Set professional page title and favicon (MUST BE FIRST STREAMLIT COMMAND)
 st.set_page_config(
@@ -618,7 +618,20 @@ for idx, inq in enumerate(st.session_state.inquiries):
 user_input = st.chat_input("Ask about care services, locations, funding...")
 active_query = preset_query or user_input
 
+# Non-blocking background warm-up: prepares database in RAM without delaying page display
+def _background_warmup():
+    try:
+        from rag import get_collection
+        get_collection()
+    except Exception:
+        pass
+
+if "warmed" not in st.session_state:
+    st.session_state.warmed = True
+    threading.Thread(target=_background_warmup, daemon=True).start()
+
 if active_query:
+    from rag import ask_cambridge_care_bot
     # 1. Immediately show user message
     with st.chat_message("user"):
         st.write(active_query)
