@@ -558,7 +558,7 @@ if "inquiries" not in st.session_state:
 
 # Quick Action Chips for Fast Pre-set Queries (Exact Laptop Layout)
 st.markdown('<div class="suggestions-label">Popular Inquiries</div>', unsafe_allow_html=True)
-col1, col2, col3, col4 = st.columns(4, gap="xxsmall", wrap=False)
+col1, col2, col3, col4 = st.columns(4, gap="small")
 
 preset_query = None
 with col1:
