@@ -1,7 +1,15 @@
 import os
 import base64
 import streamlit as st
-from rag import ask_cambridge_care_bot
+from rag import ask_cambridge_care_bot, warmup_chroma_db
+
+# Pre-warm vector database in memory so initial user queries are fast
+@st.cache_resource(show_spinner=False)
+def init_care_database():
+    warmup_chroma_db()
+    return True
+
+init_care_database()
 
 # Set professional page title and favicon
 st.set_page_config(

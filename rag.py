@@ -35,18 +35,26 @@ def load_knowledge_documents():
                     })
     return chunks
 
+# In-memory cached collection handle so the database stays open in RAM
+_CHROMA_COLLECTION = None
+
 def get_or_create_chroma_db():
     """
-    Initializes ChromaDB persistent client on disk.
+    Initializes ChromaDB persistent client on disk once, then keeps it cached in memory.
     If the database collection is empty, it automatically populates it with all 37 chunks.
     """
+    global _CHROMA_COLLECTION
+    if _CHROMA_COLLECTION is not None:
+        return _CHROMA_COLLECTION
+
     client = chromadb.PersistentClient(path=CHROMA_PATH)
     
     # Try to get existing collection or create new one
     try:
         collection = client.get_collection(name=COLLECTION_NAME)
         if collection.count() >= 37:
-            return collection
+            _CHROMA_COLLECTION = collection
+            return _CHROMA_COLLECTION
     except Exception:
         pass
 
@@ -67,7 +75,15 @@ def get_or_create_chroma_db():
             metadatas=metadatas,
             ids=ids
         )
-    return collection
+    _CHROMA_COLLECTION = collection
+    return _CHROMA_COLLECTION
+
+def warmup_chroma_db():
+    """Pre-warms ChromaDB connection and embedding model in background memory."""
+    try:
+        get_or_create_chroma_db()
+    except Exception:
+        pass
 
 def retrieve_relevant_context(query: str, top_k: int = 4):
     """
@@ -126,7 +142,7 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
     genai.configure(api_key=api_key)
     
     # Pool of high-speed models to try with automatic fallback across free quota tiers
-    models_to_try = ["gemini-flash-lite-latest", "gemini-2.5-flash-lite", "gemini-3-flash-preview"]
+    models_to_try = ["gemini-3.1-flash-lite", "gemini-3.1-flash-lite-preview", "gemini-flash-lite-latest"]
 
     # Retrieve relevant document chunks from ChromaDB
     relevant_chunks = retrieve_relevant_context(question, top_k=4)
