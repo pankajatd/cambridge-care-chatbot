@@ -112,6 +112,22 @@ Open your browser at `http://localhost:8501`.
 
 ---
 
+## 🐳 Running with Docker (Production Container)
+
+### 1. Build the Docker Image
+```bash
+docker build -t cambridge-care-chatbot .
+```
+
+### 2. Run the Container
+Pass your Gemini API key as an environment variable:
+```bash
+docker run -d -p 8501:8501 -e GEMINI_API_KEY="your_actual_gemini_api_key_here" --name care-bot cambridge-care-chatbot
+```
+Open your browser at `http://localhost:8501`.
+
+---
+
 ## ☁️ Deploying to Streamlit Community Cloud
 
 1. **Push to GitHub:** Commit your project code and push to a **Private** or Public repository on GitHub.
