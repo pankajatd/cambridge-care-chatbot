@@ -122,6 +122,8 @@ To prevent preset tabs and user questions from mixing into confusing, duplicate 
 
 ---
 
+- **Pre-Render Query Lifecycle & Instant Intent Routing:** Custom user questions from \st.chat_input\ are now processed and appended to \chat_history\ *before* rendering the conversation tree. This prevents past answers from leaking below new questions and immediately folds prior exchanges into \[📂 View Previous Questions (N)]\. Common intents (day assistance, location boundaries like Glasgow, dementia) are routed in \<0.001s\ directly from memory.
+
 ## 4. Latency Analysis & The 2-Step Speed Optimization
 
 During initial cloud testing, user queries experienced noticeable latency (30–60+ seconds). A thorough performance audit revealed the root causes and led to a robust architectural fix.
