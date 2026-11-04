@@ -78,18 +78,26 @@ st.markdown(f"""
     }}
 
     .header-top {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 0;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        gap: 10px !important;
+        margin-bottom: 0 !important;
+        width: 100% !important;
     }}
 
     .brand-group {{
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        min-width: 0 !important;
+        flex: 1 1 auto !important;
+    }}
+
+    .brand-info {{
+        min-width: 0 !important;
+        overflow: hidden !important;
     }}
 
     .brand-logo-container {{
@@ -103,7 +111,7 @@ st.markdown(f"""
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         border: 1.5px solid rgba(246, 106, 113, 0.4);
         padding: 3px;
-        flex-shrink: 0;
+        flex-shrink: 0 !important;
     }}
 
     .brand-logo-img {{
@@ -118,6 +126,9 @@ st.markdown(f"""
         color: #FFFFFF;
         letter-spacing: -0.3px;
         line-height: 1.2;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }}
 
     /* Single Unified Capsule Tab under Brand Name */
@@ -189,6 +200,8 @@ st.markdown(f"""
         border: 1px solid rgba(255, 255, 255, 0.25) !important;
         cursor: pointer;
         transition: all 0.2s ease !important;
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
     }}
 
     .phone-button:hover {{
@@ -324,25 +337,61 @@ st.markdown(f"""
         }}
 
         .header-card {{
-            padding: 10px 12px !important;
+            padding: 8px 10px !important;
             border-radius: 14px !important;
             margin-bottom: 8px !important;
         }}
 
+        .header-top {{
+            flex-wrap: nowrap !important;
+            gap: 6px !important;
+        }}
+
+        .brand-group {{
+            gap: 7px !important;
+            min-width: 0 !important;
+            flex: 1 1 auto !important;
+        }}
+
+        .brand-logo-container {{
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 9px !important;
+            padding: 2px !important;
+            flex-shrink: 0 !important;
+        }}
+
         .brand-name {{
-            font-size: 16px !important;
+            font-size: clamp(12.5px, 3.5vw, 15px) !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }}
 
         .single-capsule-tab {{
-            font-size: 9px !important;
-            padding: 2px 7px !important;
-            flex-wrap: wrap !important;
-            gap: 4px !important;
+            font-size: 8px !important;
+            padding: 2px 5px !important;
+            margin-top: 2px !important;
+            gap: 3px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            max-width: 100% !important;
         }}
 
         .phone-button {{
-            padding: 6px 12px !important;
-            font-size: 11px !important;
+            padding: 5px 8px !important;
+            font-size: clamp(9.5px, 2.7vw, 11px) !important;
+            gap: 4px !important;
+            flex-shrink: 0 !important;
+            white-space: nowrap !important;
+            align-self: center !important;
+        }}
+
+        .phone-svg-icon {{
+            width: 10px !important;
+            height: 10px !important;
         }}
 
         /* On mobile, tighten column gaps and scale button font to fit 4 in a row */
@@ -597,7 +646,7 @@ st.markdown("""
             <div class="brand-logo-container">
                 <img class="brand-logo-img" src="https://www.cambridgecareservices.co.uk/images/logo-mark.png" alt="Cambridge Care Services Logo" />
             </div>
-            <div>
+            <div class="brand-info">
                 <div class="brand-name">Cambridge Care Services</div>
                 <div class="single-capsule-tab">
                     <span class="sleek-dot"></span>
