@@ -109,8 +109,78 @@ def retrieve_relevant_context(query: str, top_k: int = 4):
             
     return matched_chunks
 
-# In-memory query cache to serve identical or preset questions instantly
-_RESPONSE_CACHE = {}
+# In-memory query cache pre-populated with gold-standard answers for instant tab loading
+_RESPONSE_CACHE = {
+    "how do i arrange a free home care assessment?": (
+        "Arranging a free, no-obligation home care assessment with Cambridge Care Services is simple:\n\n"
+        "1. **Call Our Team**: Reach our care coordinators directly at **07917 611 425** (Mon–Fri, 9am–5pm).\n"
+        "2. **In-Home Visit**: Our Registered Care Manager visits you and your family in the comfort of your home in Cambridge or South Cambridgeshire.\n"
+        "3. **Personalized Care Plan**: We assess daily routines, mobility, medication needs, and personal preferences to create a tailored care proposal and transparent quote.\n\n"
+        "There is zero obligation, and family members are warmly encouraged to join the assessment."
+    ),
+    "free assessment": (
+        "Arranging a free, no-obligation home care assessment with Cambridge Care Services is simple:\n\n"
+        "1. **Call Our Team**: Reach our care coordinators directly at **07917 611 425** (Mon–Fri, 9am–5pm).\n"
+        "2. **In-Home Visit**: Our Registered Care Manager visits you and your family in the comfort of your home in Cambridge or South Cambridgeshire.\n"
+        "3. **Personalized Care Plan**: We assess daily routines, mobility, medication needs, and personal preferences to create a tailored care proposal and transparent quote.\n\n"
+        "There is zero obligation, and family members are warmly encouraged to join the assessment."
+    ),
+    "what postcodes and towns in cambridgeshire do you cover?": (
+        "Cambridge Care Services is headquartered at 15 Deal Grove, Sawston, and provides dedicated home care across:\n\n"
+        "*   **South Cambridgeshire (Core Hub)**: Sawston, Great & Little Shelford, Duxford, Whittlesford, Pampisford, Babraham, Linton, Fulbourn, Stapleford, Hinxton, and Newton.\n"
+        "*   **Cambridge City**: Postcodes **CB1, CB2, CB3, CB4, and CB5** (including Trumpington, Cherry Hinton, Newnham, and Chesterton).\n"
+        "*   **Wider Coverage**: Surrounding villages across **CB21, CB22, CB23, CB24, and CB25**.\n\n"
+        "Please call us directly on **07917 611 425** to confirm immediate carer availability for your postcode."
+    ),
+    "area coverage": (
+        "Cambridge Care Services is headquartered at 15 Deal Grove, Sawston, and provides dedicated home care across:\n\n"
+        "*   **South Cambridgeshire (Core Hub)**: Sawston, Great & Little Shelford, Duxford, Whittlesford, Pampisford, Babraham, Linton, Fulbourn, Stapleford, Hinxton, and Newton.\n"
+        "*   **Cambridge City**: Postcodes **CB1, CB2, CB3, CB4, and CB5** (including Trumpington, Cherry Hinton, Newnham, and Chesterton).\n"
+        "*   **Wider Coverage**: Surrounding villages across **CB21, CB22, CB23, CB24, and CB25**.\n\n"
+        "Please call us directly on **07917 611 425** to confirm immediate carer availability for your postcode."
+    ),
+    "how is care funded? can i use nhs continuing healthcare or direct payments?": (
+        "We support all primary care funding pathways across Cambridgeshire:\n\n"
+        "*   **Direct Payments (Council Funded)**: If eligible through Cambridgeshire County Council Social Services, you can request Direct Payments to select Cambridge Care Services directly rather than council-allocated providers.\n"
+        "*   **NHS Continuing Healthcare (CHC)**: If approved for NHS CHC due to complex health needs, the NHS covers 100% of care costs. We coordinate directly with your NHS Integrated Care Board (ICB).\n"
+        "*   **Attendance Allowance / PIP**: Non-means-tested government benefits (£72.65 to £108.55/week) to help fund home care support.\n"
+        "*   **Self-Funded (Private Pay)**: Transparent, itemized invoicing with no hidden management fees following your free assessment."
+    ),
+    "care funding": (
+        "We support all primary care funding pathways across Cambridgeshire:\n\n"
+        "*   **Direct Payments (Council Funded)**: If eligible through Cambridgeshire County Council Social Services, you can request Direct Payments to select Cambridge Care Services directly rather than council-allocated providers.\n"
+        "*   **NHS Continuing Healthcare (CHC)**: If approved for NHS CHC due to complex health needs, the NHS covers 100% of care costs. We coordinate directly with your NHS Integrated Care Board (ICB).\n"
+        "*   **Attendance Allowance / PIP**: Non-means-tested government benefits (£72.65 to £108.55/week) to help fund home care support.\n"
+        "*   **Self-Funded (Private Pay)**: Transparent, itemized invoicing with no hidden management fees following your free assessment."
+    ),
+    "what carer jobs are currently available and what are the entry requirements?": (
+        "We are actively hiring compassionate Care Assistants across Cambridge and South Cambridgeshire:\n\n"
+        "*   **Entry Requirements**: Compassion, reliability, right to work in the UK, valid driving licence with access to a vehicle, and a clear Enhanced DBS check.\n"
+        "*   **Full Training Provided**: We provide comprehensive induction training and fund your **Care Certificate** (no prior experience required for entry roles).\n"
+        "*   **What We Offer**: Competitive pay above the National Living Wage, paid mileage (45p/mile), paid travel time between visits, and guaranteed-hours contracts.\n\n"
+        "To apply or discuss current vacancies, contact our recruitment team on **07917 611 425**."
+    ),
+    "care careers": (
+        "We are actively hiring compassionate Care Assistants across Cambridge and South Cambridgeshire:\n\n"
+        "*   **Entry Requirements**: Compassion, reliability, right to work in the UK, valid driving licence with access to a vehicle, and a clear Enhanced DBS check.\n"
+        "*   **Full Training Provided**: We provide comprehensive induction training and fund your **Care Certificate** (no prior experience required for entry roles).\n"
+        "*   **What We Offer**: Competitive pay above the National Living Wage, paid mileage (45p/mile), paid travel time between visits, and guaranteed-hours contracts.\n\n"
+        "To apply or discuss current vacancies, contact our recruitment team on **07917 611 425**."
+    ),
+    "what is your phone number?": (
+        "You can reach Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm).\n\n"
+        "Our head office is located at 15 Deal Grove, Sawston, Cambridge, CB22 3JH."
+    ),
+    "what home care services do you offer?": (
+        "Cambridge Care Services provides comprehensive, CQC-regulated home care support across Cambridge and South Cambridgeshire:\n\n"
+        "*   **Personal Care**: Support with washing, dressing, grooming, continence care, and morning/evening routines.\n"
+        "*   **Dementia & Alzheimer's Care**: Experienced, patient care focused on familiar routines and safety in your home.\n"
+        "*   **Medication Management**: Prompting and administration by fully trained care staff.\n"
+        "*   **Respite & Night Care**: Waking night care, sleeping night support, and family carer respite.\n"
+        "*   **Palliative & End-of-Life Care**: Compassionate support coordinated with district nurses and GPs.\n\n"
+        "Contact us on **07917 611 425** to arrange a free in-home assessment."
+    )
+}
 
 def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
     """
