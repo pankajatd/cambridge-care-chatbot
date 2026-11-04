@@ -636,7 +636,7 @@ st.markdown(f"""
         min-height: 40px !important;
         height: auto !important;
         line-height: 1.4 !important;
-        padding: 8px 6px 8px 0 !important;
+        padding: 8px 14px 8px 0 !important;
         overflow: hidden !important;
         overflow-y: hidden !important;
         overflow-x: hidden !important;
@@ -668,6 +668,7 @@ st.markdown(f"""
         justify-content: center !important;
         align-self: center !important;
         margin: auto 0 !important;
+        transform: translateX(-14px) !important;
         flex-shrink: 0 !important;
         cursor: pointer !important;
     }}
