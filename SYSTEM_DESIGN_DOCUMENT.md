@@ -104,6 +104,23 @@ A central requirement of the system is **visual and functional parity**: the mob
 
 ---
 
+### 3.4 Isolated Navigation & Chat Layout (Option 1 + Method B)
+To prevent preset tabs and user questions from mixing into confusing, duplicate accordions:
+- **Popular Inquiries (Option 1: Dedicated Tab Card):**
+  - Clicking any of the 4 preset buttons (📋 Free Assessment, 📍 Area Coverage, 💷 Care Funding, 💼 Care Careers) opens an instant (0ms), dedicated Tab Information Card directly below the button row.
+  - Clicking a different button immediately replaces/overwrites the card content with zero network latency.
+  - Tapping the active button a second time neatly closes the card (st.session_state.active_tab = None).
+  - Zero mixing into the user chat area.
+- **User Chat Stream (Method B: Single Collapsed Expander):**
+  - The conversation area below is reserved strictly for custom typed questions.
+  - The latest question and answer exchange is always displayed in full, open view.
+  - All past typed queries automatically fold into **one single clean expander bar** ([📂 View Previous Questions (N)]), keeping the UI compact, uncluttered, and mobile-friendly.
+- **Mobile Viewport Optimization:**
+  - Container bottom padding is set to 6.5rem !important; on mobile (@media (max-width: 640px)) to guarantee the sticky chat input never overlaps or obscures message text.
+  - 4 inquiry buttons maintain a strict single-row layout (calc(25% - 3px)) with fluid typography (clamp(8px, 2.2vw, 10px)).
+
+---
+
 ## 4. Latency Analysis & The 2-Step Speed Optimization
 
 During initial cloud testing, user queries experienced noticeable latency (30–60+ seconds). A thorough performance audit revealed the root causes and led to a robust architectural fix.
