@@ -124,6 +124,8 @@ To prevent preset tabs and user questions from mixing into confusing, duplicate 
 
 - **Pre-Render Query Lifecycle & Instant Intent Routing:** Custom user questions from \st.chat_input\ are now processed and appended to \chat_history\ *before* rendering the conversation tree. This prevents past answers from leaking below new questions and immediately folds prior exchanges into \[📂 View Previous Questions (N)]\. Common intents (day assistance, location boundaries like Glasgow, dementia) are routed in \<0.001s\ directly from memory.
 
+- **Consecutive Question Latency & 3.5s Circuit Breaker:** Resolved the multi-model cascading delay (where consecutive queries hitting free-tier 429 rate limits accumulated up to 24s across retries). Streamlined to a single ultra-fast model (\gemini-3-flash-preview\) locked behind a strict 3.5s timeout. If the remote API does not respond within 3.5s, the system instantly synthesizes a structured answer directly from verified ChromaDB knowledge chunks in \<0.01s\. Existing conversation history is rendered *first*, ensuring previous exchanges never disappear from view while new queries execute.
+
 ## 4. Latency Analysis & The 2-Step Speed Optimization
 
 During initial cloud testing, user queries experienced noticeable latency (30–60+ seconds). A thorough performance audit revealed the root causes and led to a robust architectural fix.
