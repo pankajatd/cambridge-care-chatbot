@@ -16,3 +16,7 @@ Thumbs.db
 # Test outputs
 mobile_test.png
 edge_test.png
+test_*.png
+debug_*.png
+debug_browser.py
+test_browser_flow.py
