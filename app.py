@@ -768,12 +768,23 @@ def get_care_bot():
     return ask_cambridge_care_bot
 
 # ----------------- USER CHAT CONVERSATION (METHOD B) -----------------
-# 1. Display Initial Welcome Greeting if no chat history yet
+# 1. Handle Custom User Query FIRST so history is updated before rendering
+user_input = st.chat_input("Ask about care services, locations, funding...")
+if user_input:
+    bot = get_care_bot()
+    with st.spinner("Finding care information..."):
+        response = bot(user_input)
+    st.session_state.chat_history.append({
+        "question": user_input,
+        "answer": response
+    })
+
+# 2. Display Initial Welcome Greeting if no chat history yet
 if not st.session_state.chat_history:
     with st.chat_message("assistant"):
         st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can tap any of the **Popular Inquiries** above, or ask below about **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home assessment**.")
 
-# 2. Method B: All past questions folded inside ONE single clean bar
+# 3. Method B: All past questions folded inside ONE single clean bar
 total_chat = len(st.session_state.chat_history)
 if total_chat > 1:
     past_count = total_chat - 1
@@ -784,28 +795,10 @@ if total_chat > 1:
             with st.chat_message("assistant"):
                 st.write(past["answer"])
 
-# 3. Method B: The latest active exchange is open in full view
+# 4. Method B: The latest active exchange is open in full view
 if total_chat >= 1:
     latest = st.session_state.chat_history[-1]
     with st.chat_message("user"):
         st.write(latest["question"])
     with st.chat_message("assistant"):
         st.write(latest["answer"])
-
-# 4. Handle Custom User Query from Input Box
-user_input = st.chat_input("Ask about care services, locations, funding...")
-if user_input:
-    bot = get_care_bot()
-    # Immediately show user question
-    with st.chat_message("user"):
-        st.write(user_input)
-    # Generate and show response
-    with st.chat_message("assistant"):
-        with st.spinner("Consulting care guidelines..."):
-            response = bot(user_input)
-            st.write(response)
-    # Save to chat history
-    st.session_state.chat_history.append({
-        "question": user_input,
-        "answer": response
-    })

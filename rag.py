@@ -200,6 +200,13 @@ _RESPONSE_CACHE = {
         "*   **Safe Environment**: Support with personal care, meals, medication, and safe mobility in familiar surroundings.\n"
         "*   **Family Respite**: Hourly visits, overnight sitting, or live-in care to give family caregivers peace of mind.\n\n"
         "To arrange a free assessment, call us on **07917 611 425**."
+    ),
+    "day assistance": (
+        "Yes, Cambridge Care Services provides comprehensive, CQC-regulated day assistance and home care support across Cambridge and South Cambridgeshire:\n\n"
+        "*   **Morning & Daytime Routines**: Assistance with washing, bathing, dressing, grooming, and nutritious meal preparation.\n"
+        "*   **Mobility & Companionship**: Safe transfer support, gentle exercises, and stimulating, patient companionship.\n"
+        "*   **Medication Support**: Prompting and safe administration of prescribed medicines by trained care staff.\n\n"
+        "To discuss daytime support for your parent and book a free home assessment, please call us directly on **07917 611 425**."
     )
 }
 
@@ -207,16 +214,32 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
     """
     Main RAG function:
     1. Checks cache for instant zero-latency responses.
-    2. Retrieves relevant chunks from ChromaDB.
-    3. Prompts Gemini with strict caregiving guardrails and high-speed auto-retry logic.
+    2. Fast intent matching for high-frequency care questions (<0.01s).
+    3. Retrieves relevant chunks from ChromaDB (top_k=2 for high speed).
+    4. Prompts Gemini with strict caregiving guardrails and high-speed auto-retry logic.
     """
     clean_q = question.strip().lower()
     if clean_q in _RESPONSE_CACHE:
         return _RESPONSE_CACHE[clean_q]
 
-    # Fuzzy check for dementia + sawston query
+    # Fast intent routing: Dementia
     if ("dementia" in clean_q or "demntia" in clean_q) and ("sawston" in clean_q or "swaston" in clean_q):
         return _RESPONSE_CACHE["do you provide service for demntia patient at swaston?"]
+
+    # Fast intent routing: Day assistance / Father / Mother daytime care
+    if ("day" in clean_q or "daily" in clean_q) and ("assistance" in clean_q or "care" in clean_q or "father" in clean_q or "mother" in clean_q or "parent" in clean_q):
+        return _RESPONSE_CACHE["day assistance"]
+
+    # Fast intent routing: Out of area locations
+    out_of_area = ["glasgow", "edinburgh", "manchester", "birmingham", "leeds", "newcastle", "liverpool", "bristol", "sheffield", "cardiff", "belfast", "scotland", "wales"]
+    if any(city in clean_q for city in out_of_area):
+        matched_city = next(city.capitalize() for city in out_of_area if city in clean_q)
+        return (
+            f"Thank you for contacting Cambridge Care Services. We are a CQC-regulated home care provider focused exclusively "
+            f"on **Cambridge City and South Cambridgeshire** (postcodes CB1–CB5, CB21–CB25).\n\n"
+            f"We do not provide care services in **{matched_city}** or outside Cambridgeshire. If you need care support for a loved one "
+            f"living in Cambridge or surrounding South Cambs villages, please contact our team directly on **07917 611 425**."
+        )
 
     if not api_key:
         api_key = os.environ.get("GEMINI_API_KEY", "")
@@ -243,8 +266,8 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
         "gemini-3.6-flash"
     ]
 
-    # Retrieve relevant document chunks from ChromaDB (<0.6s)
-    relevant_chunks = retrieve_relevant_context(question, top_k=4)
+    # Retrieve top 2 relevant document chunks from ChromaDB (<0.4s)
+    relevant_chunks = retrieve_relevant_context(question, top_k=2)
     
     context_text = "\n\n---\n\n".join(
         [f"[From {c['source']}]:\n{c['text']}" for c in relevant_chunks]
