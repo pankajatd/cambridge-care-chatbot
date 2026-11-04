@@ -587,33 +587,6 @@ with col4:
     if st.button("💼 Care Careers", use_container_width=True):
         preset_query = "What carer jobs are currently available and what are the entry requirements?"
 
-# Display Initial Welcome Greeting if no inquiries yet
-if not st.session_state.inquiries:
-    with st.chat_message("assistant"):
-        st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can ask about our **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home care assessment**.")
-
-# Render Inquiries:
-# 1. Previous inquiries are collapsed in a uniform 100% width card
-# 2. Latest inquiry is expanded in full view with matching uniform width
-total_inquiries = len(st.session_state.inquiries)
-
-for idx, inq in enumerate(st.session_state.inquiries):
-    is_latest = (idx == total_inquiries - 1)
-    
-    if not is_latest:
-        # COLLAPSED TAB - 100% UNIFORM WIDTH MATCHING ACTIVE BOX
-        with st.expander(f"Previous Inquiry: {inq['question']}", expanded=False):
-            with st.chat_message("user"):
-                st.write(inq["question"])
-            with st.chat_message("assistant"):
-                st.write(inq["answer"])
-    else:
-        # LATEST INQUIRY - 100% UNIFORM WIDTH
-        with st.chat_message("user"):
-            st.write(inq["question"])
-        with st.chat_message("assistant"):
-            st.write(inq["answer"])
-
 # Handle user query (either typed in input box or clicked from quick chips)
 user_input = st.chat_input("Ask about care services, locations, funding...")
 active_query = preset_query or user_input
@@ -625,20 +598,38 @@ def get_care_bot():
     warmup_chroma_db()
     return ask_cambridge_care_bot
 
+# 1. Process active inquiry FIRST and append to history so previous tabs collapse immediately
 if active_query:
     bot = get_care_bot()
-    # 1. Immediately show user message
-    with st.chat_message("user"):
-        st.write(active_query)
-
-    # 2. Query ChromaDB and Gemini via RAG
-    with st.chat_message("assistant"):
-        with st.spinner("Consulting care guidelines..."):
-            response = bot(active_query)
-            st.write(response)
-            
-    # 3. Save new inquiry exchange into session history
+    response = bot(active_query)
     st.session_state.inquiries.append({
         "question": active_query,
         "answer": response
     })
+
+# 2. Display Initial Welcome Greeting if no inquiries yet
+if not st.session_state.inquiries:
+    with st.chat_message("assistant"):
+        st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can ask about our **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home care assessment**.")
+
+# 3. Render Inquiries:
+# - ALL previous inquiries (0 to N-2) are IMMEDIATELY COLLAPSED (expanded=False)
+# - ONLY the latest active inquiry (N-1) is expanded in full view
+total_inquiries = len(st.session_state.inquiries)
+
+for idx, inq in enumerate(st.session_state.inquiries):
+    is_latest = (idx == total_inquiries - 1)
+    
+    if not is_latest:
+        # COLLAPSED TAB - ALWAYS COLLAPSED IMMEDIATELY
+        with st.expander(f"Previous Inquiry: {inq['question']}", expanded=False):
+            with st.chat_message("user"):
+                st.write(inq["question"])
+            with st.chat_message("assistant"):
+                st.write(inq["answer"])
+    else:
+        # LATEST INQUIRY - ONLY THIS ACTIVE ONE IS EXPANDED!
+        with st.chat_message("user"):
+            st.write(inq["question"])
+        with st.chat_message("assistant"):
+            st.write(inq["answer"])
