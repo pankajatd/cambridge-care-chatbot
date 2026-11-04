@@ -600,12 +600,13 @@ def get_care_bot():
 
 # 1. Process active inquiry FIRST and append to history so previous tabs collapse immediately
 if active_query:
-    bot = get_care_bot()
-    response = bot(active_query)
-    st.session_state.inquiries.append({
-        "question": active_query,
-        "answer": response
-    })
+    if not st.session_state.inquiries or st.session_state.inquiries[-1]["question"] != active_query:
+        bot = get_care_bot()
+        response = bot(active_query)
+        st.session_state.inquiries.append({
+            "question": active_query,
+            "answer": response
+        })
 
 # 2. Display Initial Welcome Greeting if no inquiries yet
 if not st.session_state.inquiries:
@@ -621,8 +622,8 @@ for idx, inq in enumerate(st.session_state.inquiries):
     is_latest = (idx == total_inquiries - 1)
     
     if not is_latest:
-        # COLLAPSED TAB - ALWAYS COLLAPSED IMMEDIATELY
-        with st.expander(f"Previous Inquiry: {inq['question']}", expanded=False):
+        # COLLAPSED TAB - ALWAYS COLLAPSED IMMEDIATELY WITH DYNAMIC KEY
+        with st.expander(f"Previous Inquiry: {inq['question']}", expanded=False, key=f"prev_inq_{idx}_{total_inquiries}"):
             with st.chat_message("user"):
                 st.write(inq["question"])
             with st.chat_message("assistant"):
