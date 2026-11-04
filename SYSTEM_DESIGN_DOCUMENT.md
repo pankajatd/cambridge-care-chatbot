@@ -117,7 +117,8 @@ To prevent preset tabs and user questions from mixing into confusing, duplicate 
   - All past typed queries automatically fold into **one single clean expander bar** ([📂 View Previous Questions (N)]), keeping the UI compact, uncluttered, and mobile-friendly.
 - **Mobile Viewport Optimization:**
   - Container bottom padding is set to 6.5rem !important; on mobile (@media (max-width: 640px)) to guarantee the sticky chat input never overlaps or obscures message text.
-  - 4 inquiry buttons maintain a strict single-row layout (calc(25% - 3px)) with fluid typography (clamp(8px, 2.2vw, 10px)).
+  - **Header Mobile Row Locking:** Enforced \lex-wrap: nowrap !important;\ on \.header-top\ with \lex-shrink: 0 !important;\ on \.phone-button\, ensuring the phone number pill is permanently anchored to the top-right header row and never pushed down onto a second line on mobile devices.
+- 4 inquiry buttons maintain a strict single-row layout (calc(25% - 3px)) with fluid typography (clamp(8px, 2.2vw, 10px)).
 
 ---
 
