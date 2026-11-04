@@ -710,18 +710,6 @@ TAB_CONTENT = {
     }
 }
 
-# Background non-blocking pre-warmup for instant first-query performance
-def _bg_warmup():
-    try:
-        from rag import warmup_chroma_db
-        warmup_chroma_db()
-    except Exception:
-        pass
-
-if "warmed_up" not in st.session_state:
-    st.session_state.warmed_up = True
-    threading.Thread(target=_bg_warmup, daemon=True).start()
-
 # State management: Popular tab viewer and User Chat are completely isolated
 if "active_tab" not in st.session_state:
     st.session_state.active_tab = None
@@ -760,11 +748,10 @@ if st.session_state.active_tab and st.session_state.active_tab in TAB_CONTENT:
     st.markdown(tab_data["text"])
     st.markdown("</div></div>", unsafe_allow_html=True)
 
-# Cached RAG Bot loader for custom queries
+# High-performance care bot loader
 @st.cache_resource(show_spinner=False)
 def get_care_bot():
-    from rag import ask_cambridge_care_bot, warmup_chroma_db
-    warmup_chroma_db()
+    from rag import ask_cambridge_care_bot
     return ask_cambridge_care_bot
 
 # ----------------- USER CHAT CONVERSATION (METHOD B) -----------------
@@ -793,10 +780,9 @@ elif user_input:
     with st.chat_message("user"):
         st.write(user_input)
     with st.chat_message("assistant"):
-        with st.spinner("Finding care information..."):
-            bot = get_care_bot()
-            response = bot(user_input)
-            st.write(response)
+        bot = get_care_bot()
+        response = bot(user_input)
+        st.write(response)
 
     # Save to history without st.rerun() to prevent connection blips or lost state
     st.session_state.chat_history.append({
