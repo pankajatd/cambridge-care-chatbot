@@ -585,19 +585,25 @@ st.markdown(f"""
         padding: 0 !important;
     }}
 
-    div[data-testid="stChatInput"],
-    .stChatInput,
+    div[data-testid="stChatInput"] {{
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }}
+
     div[data-testid="stChatInput"] > div {{
-        border: 2.5px solid #F66A71 !important;
-        border-radius: 22px !important;
+        border: 2px solid #F66A71 !important;
+        border-radius: 28px !important;
         box-shadow: 0 6px 26px rgba(246, 106, 113, 0.38), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
         background: #FFFFFF !important;
+        display: flex !important;
+        align-items: center !important;
+        padding: 4px 12px 4px 16px !important;
         min-height: 52px !important;
         transition: all 0.25s ease !important;
     }}
 
-    div[data-testid="stChatInput"]:focus-within,
-    div[data-testid="stChatInput"] > div:focus-within {{
+    div[data-testid="stChatInput"]:focus-within > div {{
         border-color: #E8505B !important;
         box-shadow: 0 8px 32px rgba(246, 106, 113, 0.55), 0 3px 10px rgba(0, 0, 0, 0.1) !important;
     }}
@@ -608,10 +614,10 @@ st.markdown(f"""
         font-size: 13.5px !important;
         font-weight: 500 !important;
         color: #1A202C !important;
-        min-height: 44px !important;
+        min-height: 40px !important;
         height: auto !important;
         line-height: 1.35 !important;
-        padding: 10px 12px 8px 14px !important;
+        padding: 8px 8px 8px 0 !important;
         overflow: hidden !important;
         overflow-y: hidden !important;
         overflow-x: hidden !important;
@@ -619,6 +625,7 @@ st.markdown(f"""
         -ms-overflow-style: none !important;
         resize: none !important;
         box-sizing: border-box !important;
+        align-self: center !important;
     }}
 
     div[data-testid="stChatInput"] textarea::-webkit-scrollbar {{
@@ -633,8 +640,16 @@ st.markdown(f"""
         color: #FFFFFF !important;
         box-shadow: 0 2px 8px rgba(246, 106, 113, 0.45) !important;
         border: none !important;
-        width: 36px !important;
-        height: 36px !important;
+        width: 34px !important;
+        height: 34px !important;
+        min-width: 34px !important;
+        min-height: 34px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        align-self: center !important;
+        margin: auto 8px auto auto !important;
+        flex-shrink: 0 !important;
     }}
 </style>
 """, unsafe_allow_html=True)
