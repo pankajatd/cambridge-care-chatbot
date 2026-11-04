@@ -61,7 +61,7 @@ st.markdown(f"""
     /* Main Container: Generous Full Laptop Layout by Default */
     .block-container {{
         padding-top: 2rem !important;
-        padding-bottom: 2rem !important;
+        padding-bottom: 7rem !important;
         max-width: 860px !important;
     }}
 
@@ -473,9 +473,14 @@ st.markdown(f"""
     }}
 
     /* ---------------- HIGHLIGHTED QUERY INPUT BOX - NO SCROLLBAR ---------------- */
-    div[data-testid="stBottom"] {{
-        background: transparent !important;
-        padding-bottom: 12px !important;
+    div[data-testid="stBottom"],
+    .stBottom {{
+        background: #F8F9FA !important;
+        background: linear-gradient(180deg, rgba(248, 249, 250, 0.95) 0%, #F1F4F7 100%) !important;
+        backdrop-filter: blur(10px) !important;
+        padding-top: 10px !important;
+        padding-bottom: 14px !important;
+        border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
     }}
 
     div[data-testid="stBottom"] > div {{
