@@ -146,8 +146,8 @@ if "warmed" not in st.session_state:
 ```
 
 #### Step 3: Zero-Reload Continuous Conversation Flow & Immediate Collapse
-Re-ordered the inquiry processing pipeline in `app.py` so that any active query (from chip buttons or typed input) is processed and appended to session state *before* rendering the conversation list. This guarantees:
-1. **Immediate Collapse on 2nd Click**: Clicking Tab 2 immediately collapses Tab 1 into an accordion (`expanded=False`), keeping only the newest active tab expanded.
+Re-ordered the inquiry processing pipeline in `app.py` so that any active query (from chip buttons or typed input) is processed and appended to session state *before* rendering the conversation list, coupled with a dynamic React unmount key (`key=f"prev_inq_{idx}_{total_inquiries}"`). This guarantees:
+1. **Immediate Collapse on 2nd Click**: Clicking Tab 2 immediately unmounts Tab 1 in React and collapses it into an accordion (`expanded=False`), keeping strictly the newest active tab expanded.
 2. **Zero-Reload**: Eliminated redundant `st.rerun()` calls on response generation, completely removing double-reload latency penalties on consecutive user queries.
 
 #### Step 4: Upgraded High-Speed Model Pool
