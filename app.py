@@ -768,45 +768,57 @@ def get_care_bot():
     return ask_cambridge_care_bot
 
 # ----------------- USER CHAT CONVERSATION (METHOD B) -----------------
-# 1. Display Initial Welcome Greeting if no chat history yet
-if not st.session_state.chat_history:
+user_input = st.chat_input("Ask about care services, locations, funding...")
+
+has_history = len(st.session_state.chat_history) > 0
+
+# Case 1: Fresh visit — show welcome greeting
+if not has_history and not user_input:
     with st.chat_message("assistant"):
         st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can tap any of the **Popular Inquiries** above, or ask below about **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home assessment**.")
 
-# 2. Method B: All past questions folded inside ONE single clean bar
-total_chat = len(st.session_state.chat_history)
-if total_chat > 1:
-    past_count = total_chat - 1
-    with st.expander(f"📂 View Previous Questions ({past_count})", expanded=False):
-        for past in st.session_state.chat_history[:-1]:
-            with st.chat_message("user"):
-                st.write(past["question"])
-            with st.chat_message("assistant"):
-                st.write(past["answer"])
+# Case 2: User just submitted a question
+elif user_input:
+    # All prior history folds into the expander immediately
+    if has_history:
+        past_count = len(st.session_state.chat_history)
+        with st.expander(f"📂 View Previous Questions ({past_count})", expanded=False):
+            for past in st.session_state.chat_history:
+                with st.chat_message("user"):
+                    st.write(past["question"])
+                with st.chat_message("assistant"):
+                    st.write(past["answer"])
 
-# 3. Method B: The latest active exchange is open in full view
-if total_chat >= 1:
-    latest = st.session_state.chat_history[-1]
-    with st.chat_message("user"):
-        st.write(latest["question"])
-    with st.chat_message("assistant"):
-        st.write(latest["answer"])
-
-# 4. Handle Custom User Query from Input Box
-user_input = st.chat_input("Ask about care services, locations, funding...")
-if user_input:
-    # Immediately render user question
+    # Render current question in full view
     with st.chat_message("user"):
         st.write(user_input)
-    # Immediately render assistant response with spinner
     with st.chat_message("assistant"):
         with st.spinner("Finding care information..."):
             bot = get_care_bot()
             response = bot(user_input)
             st.write(response)
-    # Append to history and rerun so Method B folds previous exchange cleanly
+
+    # Save to history without st.rerun() to prevent connection blips or lost state
     st.session_state.chat_history.append({
         "question": user_input,
         "answer": response
     })
-    st.rerun()
+
+# Case 3: Page re-render or tab click — show folded past + latest in full view
+else:
+    total_chat = len(st.session_state.chat_history)
+    if total_chat > 1:
+        past_count = total_chat - 1
+        with st.expander(f"📂 View Previous Questions ({past_count})", expanded=False):
+            for past in st.session_state.chat_history[:-1]:
+                with st.chat_message("user"):
+                    st.write(past["question"])
+                with st.chat_message("assistant"):
+                    st.write(past["answer"])
+
+    if total_chat >= 1:
+        latest = st.session_state.chat_history[-1]
+        with st.chat_message("user"):
+            st.write(latest["question"])
+        with st.chat_message("assistant"):
+            st.write(latest["answer"])

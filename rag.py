@@ -262,17 +262,30 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
             except Exception:
                 pass
 
-    if not api_key:
-        return "Please provide a valid Gemini API key in your .env file to start chatting."
-
-    if genai is None:
-        return "Error: google-generativeai package is not installed in the active Python environment."
-
-    # Configure the Gemini API
-    genai.configure(api_key=api_key)
-
     # Retrieve top 2 relevant document chunks from ChromaDB (<0.4s)
     relevant_chunks = retrieve_relevant_context(question, top_k=2)
+
+    # If Gemini API key is missing or genai not available, answer directly from verified knowledge base
+    if not api_key or genai is None:
+        if relevant_chunks:
+            points = []
+            for c in relevant_chunks:
+                lines = [line.strip("- *• \t") for line in c["text"].split("\n") if len(line.strip()) > 20 and not line.strip().endswith(":")]
+                points.extend(lines[:3])
+            unique_points = list(dict.fromkeys(points))[:3]
+            bullets = "\n".join([f"*   {p}" for p in unique_points])
+            return (
+                f"Based on our official care guidelines:\n\n"
+                f"{bullets}\n\n"
+                f"For tailored care arrangements and to book a free assessment, please call our Sawston team directly on **07917 611 425**."
+            )
+        return "Our care team is ready to help. Please call Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm)."
+
+    # Configure the Gemini API
+    try:
+        genai.configure(api_key=api_key)
+    except Exception:
+        pass
     
     context_text = "\n\n---\n\n".join(
         [f"[From {c['source']}]:\n{c['text']}" for c in relevant_chunks]
