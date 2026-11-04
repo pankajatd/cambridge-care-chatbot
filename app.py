@@ -618,20 +618,15 @@ for idx, inq in enumerate(st.session_state.inquiries):
 user_input = st.chat_input("Ask about care services, locations, funding...")
 active_query = preset_query or user_input
 
-# Non-blocking background warm-up: prepares database in RAM without delaying page display
-def _background_warmup():
-    try:
-        from rag import warmup_chroma_db
-        warmup_chroma_db()
-    except Exception:
-        pass
-
-if "warmed" not in st.session_state:
-    st.session_state.warmed = True
-    threading.Thread(target=_background_warmup, daemon=True).start()
+# Cached RAG Bot loader: keeps vector collection warm in server RAM without CPU lockup
+@st.cache_resource(show_spinner=False)
+def get_care_bot():
+    from rag import ask_cambridge_care_bot, warmup_chroma_db
+    warmup_chroma_db()
+    return ask_cambridge_care_bot
 
 if active_query:
-    from rag import ask_cambridge_care_bot
+    bot = get_care_bot()
     # 1. Immediately show user message
     with st.chat_message("user"):
         st.write(active_query)
@@ -639,7 +634,7 @@ if active_query:
     # 2. Query ChromaDB and Gemini via RAG
     with st.chat_message("assistant"):
         with st.spinner("Consulting care guidelines..."):
-            response = ask_cambridge_care_bot(active_query)
+            response = bot(active_query)
             st.write(response)
             
     # 3. Save new inquiry exchange into session history
