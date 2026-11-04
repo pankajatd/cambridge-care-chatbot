@@ -593,31 +593,50 @@ st.markdown(f"""
 
     div[data-testid="stChatInput"] > div {{
         border: 2px solid #F66A71 !important;
-        border-radius: 28px !important;
-        box-shadow: 0 6px 26px rgba(246, 106, 113, 0.38), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+        border-radius: 30px !important;
+        box-shadow: 0 4px 20px rgba(246, 106, 113, 0.35) !important;
         background: #FFFFFF !important;
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
-        padding: 4px 12px 4px 16px !important;
+        padding: 4px 10px 4px 18px !important;
         min-height: 52px !important;
+        box-sizing: border-box !important;
         transition: all 0.25s ease !important;
     }}
 
     div[data-testid="stChatInput"]:focus-within > div {{
         border-color: #E8505B !important;
-        box-shadow: 0 8px 32px rgba(246, 106, 113, 0.55), 0 3px 10px rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 6px 28px rgba(246, 106, 113, 0.5) !important;
+    }}
+
+    /* Remove inner Baseweb red focus borders so entire capsule is one unified pill */
+    div[data-testid="stChatInput"] [data-baseweb="textarea"],
+    div[data-testid="stChatInput"] [data-baseweb="base-input"],
+    div[data-testid="stChatInput"] [data-baseweb="textarea"]:focus-within,
+    div[data-testid="stChatInput"] [data-baseweb="base-input"]:focus-within {{
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
     }}
 
     div[data-testid="stChatInput"] textarea,
     div[data-testid="stChatInput"] textarea:focus,
     div[data-testid="stChatInput"] textarea:hover {{
-        font-size: 13.5px !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        font-size: 14px !important;
         font-weight: 500 !important;
         color: #1A202C !important;
         min-height: 40px !important;
         height: auto !important;
-        line-height: 1.35 !important;
-        padding: 8px 8px 8px 0 !important;
+        line-height: 1.4 !important;
+        padding: 8px 6px 8px 0 !important;
         overflow: hidden !important;
         overflow-y: hidden !important;
         overflow-x: hidden !important;
@@ -648,8 +667,9 @@ st.markdown(f"""
         align-items: center !important;
         justify-content: center !important;
         align-self: center !important;
-        margin: auto 8px auto auto !important;
+        margin: auto 0 !important;
         flex-shrink: 0 !important;
+        cursor: pointer !important;
     }}
 </style>
 """, unsafe_allow_html=True)
