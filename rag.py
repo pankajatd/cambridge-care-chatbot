@@ -171,6 +171,14 @@ _RESPONSE_CACHE = {
         "You can reach Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm).\n\n"
         "Our head office is located at 15 Deal Grove, Sawston, Cambridge, CB22 3JH."
     ),
+    "what is your telephone number?": (
+        "You can reach Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm).\n\n"
+        "Our head office is located at 15 Deal Grove, Sawston, Cambridge, CB22 3JH."
+    ),
+    "phone number": (
+        "You can reach Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm).\n\n"
+        "Our head office is located at 15 Deal Grove, Sawston, Cambridge, CB22 3JH."
+    ),
     "what home care services do you offer?": (
         "Cambridge Care Services provides comprehensive, CQC-regulated home care support across Cambridge and South Cambridgeshire:\n\n"
         "*   **Personal Care**: Support with washing, dressing, grooming, continence care, and morning/evening routines.\n"
@@ -222,6 +230,10 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
     if clean_q in _RESPONSE_CACHE:
         return _RESPONSE_CACHE[clean_q]
 
+    # Fast intent routing: Phone / Contact
+    if "phone" in clean_q or "telephone" in clean_q or "contact number" in clean_q:
+        return _RESPONSE_CACHE["what is your phone number?"]
+
     # Fast intent routing: Dementia
     if ("dementia" in clean_q or "demntia" in clean_q) and ("sawston" in clean_q or "swaston" in clean_q):
         return _RESPONSE_CACHE["do you provide service for demntia patient at swaston?"]
@@ -258,13 +270,6 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
 
     # Configure the Gemini API
     genai.configure(api_key=api_key)
-    
-    # Active high-speed models verified healthy on Google Gemini API
-    models_to_try = [
-        "gemini-3-flash-preview",
-        "gemini-3.5-flash",
-        "gemini-3.6-flash"
-    ]
 
     # Retrieve top 2 relevant document chunks from ChromaDB (<0.4s)
     relevant_chunks = retrieve_relevant_context(question, top_k=2)
@@ -292,28 +297,33 @@ USER QUESTION:
 
 YOUR HELPFUL RESPONSE:"""
 
-    for model_name in models_to_try:
-        try:
-            model = genai.GenerativeModel(model_name)
-            # 8-second request timeout guarantees the UI never hangs indefinitely
-            response = model.generate_content(
-                system_prompt,
-                request_options={"timeout": 8.0}
-            )
-            result = response.text
+    # Single high-speed model with a strict 3.5s timeout circuit breaker
+    try:
+        model = genai.GenerativeModel("gemini-3-flash-preview")
+        response = model.generate_content(
+            system_prompt,
+            request_options={"timeout": 3.5}
+        )
+        if response and response.text:
+            result = response.text.strip()
             _RESPONSE_CACHE[clean_q] = result
             return result
-        except Exception:
-            # Model busy (503/429/timeout); immediately try the next model in the pool
-            continue
+    except Exception:
+        pass
 
-    # Fallback if external API rate limit or outage occurs: synthesize from verified local chunks
+    # Instant Fallback: Synthesize directly from ChromaDB verified chunks (<0.01s)
     if relevant_chunks:
-        bullets = "\n".join([f"• {c['text'][:160]}..." for c in relevant_chunks[:3]])
+        points = []
+        for c in relevant_chunks:
+            lines = [line.strip("- *• \t") for line in c["text"].split("\n") if len(line.strip()) > 20 and not line.strip().endswith(":")]
+            points.extend(lines[:3])
+        
+        unique_points = list(dict.fromkeys(points))[:3]
+        bullets = "\n".join([f"*   {p}" for p in unique_points])
         return (
-            f"Here is what our care records say regarding your inquiry:\n\n"
+            f"Based on our official care guidelines:\n\n"
             f"{bullets}\n\n"
-            f"For immediate details and to book a free assessment, please call our Sawston team directly on **07917 611 425**."
+            f"For tailored care arrangements and to book a free assessment, please call our Sawston team directly on **07917 611 425**."
         )
 
     return "Our care team is ready to help. Please call Cambridge Care Services directly on **07917 611 425** (Mon–Fri, 9am–5pm)."
