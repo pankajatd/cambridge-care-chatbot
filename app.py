@@ -785,10 +785,11 @@ if st.session_state.active_tab and st.session_state.active_tab in TAB_CONTENT:
     st.markdown("</div></div>", unsafe_allow_html=True)
 
 # High-performance care bot loader
-@st.cache_resource(show_spinner=False)
 def get_care_bot():
-    from rag import ask_cambridge_care_bot
-    return ask_cambridge_care_bot
+    import importlib
+    import rag
+    importlib.reload(rag)
+    return rag.ask_cambridge_care_bot
 
 # ----------------- USER CHAT CONVERSATION (METHOD B) -----------------
 user_input = st.chat_input("Ask about care services, locations, funding...")
