@@ -204,6 +204,40 @@ st.markdown(f"""
         vertical-align: middle;
     }}
 
+    /* Dedicated Popular Inquiry Tab Info Card (Option 1) */
+    .tab-info-card {{
+        background: #FFFFFF !important;
+        border: 2px solid #F66A71 !important;
+        border-radius: 14px !important;
+        padding: 14px 18px !important;
+        margin-top: 4px !important;
+        margin-bottom: 18px !important;
+        box-shadow: 0 4px 16px rgba(246, 106, 113, 0.15), 0 1px 3px rgba(0, 0, 0, 0.04) !important;
+        animation: fadeIn 0.25s ease-in-out !important;
+    }}
+    .tab-info-header {{
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        margin-bottom: 8px !important;
+        padding-bottom: 6px !important;
+        border-bottom: 1.5px solid #F1F5F9 !important;
+    }}
+    .tab-info-title {{
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        color: #1E293B !important;
+    }}
+    .tab-info-body {{
+        font-size: 12.5px !important;
+        line-height: 1.55 !important;
+        color: #334155 !important;
+    }}
+    @keyframes fadeIn {{
+        from {{ opacity: 0; transform: translateY(-4px); }}
+        to {{ opacity: 1; transform: translateY(0); }}
+    }}
+
     /* ---------------- POPULAR INQUIRY PILLS: LAPTOP DEFAULT (FULL SIZED & ELEGANT) ---------------- */
     .suggestions-label {{
         font-size: 11px;
@@ -286,7 +320,7 @@ st.markdown(f"""
             padding-top: 1rem !important;
             padding-left: 8px !important;
             padding-right: 8px !important;
-            padding-bottom: 0.5rem !important;
+            padding-bottom: 6.5rem !important;
         }}
 
         .header-card {{
@@ -335,6 +369,19 @@ st.markdown(f"""
             padding: 3px 2px !important;
             min-height: 30px !important;
             border-radius: 10px !important;
+        }}
+
+        /* Mobile adaptation for Popular Inquiry Tab Info Card */
+        .tab-info-card {{
+            padding: 10px 12px !important;
+            border-radius: 12px !important;
+            margin-bottom: 12px !important;
+        }}
+        .tab-info-title {{
+            font-size: 12px !important;
+        }}
+        .tab-info-body {{
+            font-size: 11.5px !important;
         }}
     }}
 
@@ -570,72 +617,146 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Initialize conversation history organized by inquiries (question + answer exchanges)
-if "inquiries" not in st.session_state:
-    st.session_state.inquiries = []
+# Gold-Standard Content for Popular Inquiries (Option 1: Instant, Dedicated Panel)
+TAB_CONTENT = {
+    "free_assessment": {
+        "title": "📋 Free, No-Obligation Home Care Assessment",
+        "text": (
+            "Arranging a free home care assessment with Cambridge Care Services is simple:\n\n"
+            "1. **Call Our Team**: Reach our care coordinators directly on **07917 611 425** (Mon–Fri, 9am–5pm).\n"
+            "2. **In-Home Visit**: Our Registered Care Manager visits you and your family in the comfort of your home in Cambridge or South Cambridgeshire.\n"
+            "3. **Personalized Care Plan**: We assess daily routines, mobility, medication needs, and personal preferences to create a tailored care proposal and transparent quote.\n\n"
+            "There is zero obligation, and family members are warmly encouraged to join the assessment."
+        )
+    },
+    "area_coverage": {
+        "title": "📍 Areas & Postcodes Covered across Cambridgeshire",
+        "text": (
+            "Cambridge Care Services is headquartered at 15 Deal Grove, Sawston, and provides dedicated home care across:\n\n"
+            "*   **South Cambridgeshire (Core Hub)**: Sawston, Great & Little Shelford, Duxford, Whittlesford, Pampisford, Babraham, Linton, Fulbourn, Stapleford, Hinxton, and Newton.\n"
+            "*   **Cambridge City**: Postcodes **CB1, CB2, CB3, CB4, and CB5** (including Trumpington, Cherry Hinton, Newnham, and Chesterton).\n"
+            "*   **Wider Coverage**: Surrounding villages across **CB21, CB22, CB23, CB24, and CB25**.\n\n"
+            "Please call us directly on **07917 611 425** to confirm immediate carer availability for your postcode."
+        )
+    },
+    "care_funding": {
+        "title": "💷 Care Funding Pathways & Support",
+        "text": (
+            "We support all primary care funding pathways across Cambridgeshire:\n\n"
+            "*   **Direct Payments (Council Funded)**: If eligible through Cambridgeshire County Council Social Services, you can request Direct Payments to select Cambridge Care Services directly rather than council-allocated providers.\n"
+            "*   **NHS Continuing Healthcare (CHC)**: If approved for NHS CHC due to complex health needs, the NHS covers 100% of care costs. We coordinate directly with your NHS Integrated Care Board (ICB).\n"
+            "*   **Attendance Allowance / PIP**: Non-means-tested government benefits (£72.65 to £108.55/week) to help fund home care support.\n"
+            "*   **Self-Funded (Private Pay)**: Transparent, itemized invoicing with no hidden management fees following your free assessment."
+        )
+    },
+    "care_careers": {
+        "title": "💼 Care Assistant Careers & Entry Requirements",
+        "text": (
+            "We are actively hiring compassionate Care Assistants across Cambridge and South Cambridgeshire:\n\n"
+            "*   **Entry Requirements**: Compassion, reliability, right to work in the UK, valid driving licence with access to a vehicle, and a clear Enhanced DBS check.\n"
+            "*   **Full Training Provided**: We provide comprehensive induction training and fund your **Care Certificate** (no prior experience required for entry roles).\n"
+            "*   **What We Offer**: Competitive pay above the National Living Wage, paid mileage (45p/mile), paid travel time between visits, and guaranteed-hours contracts.\n\n"
+            "To apply or discuss current vacancies, contact our recruitment team on **07917 611 425**."
+        )
+    }
+}
 
-# Quick Action Chips for Fast Pre-set Queries (Exact Laptop Layout)
+# Background non-blocking pre-warmup for instant first-query performance
+def _bg_warmup():
+    try:
+        from rag import warmup_chroma_db
+        warmup_chroma_db()
+    except Exception:
+        pass
+
+if "warmed_up" not in st.session_state:
+    st.session_state.warmed_up = True
+    threading.Thread(target=_bg_warmup, daemon=True).start()
+
+# State management: Popular tab viewer and User Chat are completely isolated
+if "active_tab" not in st.session_state:
+    st.session_state.active_tab = None
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Quick Action Chips for Fast Pre-set Queries (Option 1: Overwrites cleanly on click, tap again to close)
 st.markdown('<div class="suggestions-label">Popular Inquiries</div>', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4, gap="small")
 
-preset_query = None
 with col1:
     if st.button("📋 Free Assessment", use_container_width=True):
-        preset_query = "How do I arrange a free home care assessment?"
+        st.session_state.active_tab = None if st.session_state.active_tab == "free_assessment" else "free_assessment"
 with col2:
     if st.button("📍 Area Coverage", use_container_width=True):
-        preset_query = "What postcodes and towns in Cambridgeshire do you cover?"
+        st.session_state.active_tab = None if st.session_state.active_tab == "area_coverage" else "area_coverage"
 with col3:
     if st.button("💷 Care Funding", use_container_width=True):
-        preset_query = "How is care funded? Can I use NHS Continuing Healthcare or Direct Payments?"
+        st.session_state.active_tab = None if st.session_state.active_tab == "care_funding" else "care_funding"
 with col4:
     if st.button("💼 Care Careers", use_container_width=True):
-        preset_query = "What carer jobs are currently available and what are the entry requirements?"
+        st.session_state.active_tab = None if st.session_state.active_tab == "care_careers" else "care_careers"
 
-# Handle user query (either typed in input box or clicked from quick chips)
-user_input = st.chat_input("Ask about care services, locations, funding...")
-active_query = preset_query or user_input
+# Dedicated Option 1 Tab Information Card (instant 0ms display; switches topic cleanly)
+if st.session_state.active_tab and st.session_state.active_tab in TAB_CONTENT:
+    tab_data = TAB_CONTENT[st.session_state.active_tab]
+    st.markdown(f"""
+    <div class="tab-info-card">
+        <div class="tab-info-header">
+            <span class="tab-info-title">{tab_data['title']}</span>
+            <span style="font-size: 11px; color: #94A3B8; font-weight: 500;">Tap pill to close</span>
+        </div>
+        <div class="tab-info-body">
+    """, unsafe_allow_html=True)
+    st.markdown(tab_data["text"])
+    st.markdown("</div></div>", unsafe_allow_html=True)
 
-# Cached RAG Bot loader: keeps vector collection warm in server RAM without CPU lockup
+# Cached RAG Bot loader for custom queries
 @st.cache_resource(show_spinner=False)
 def get_care_bot():
     from rag import ask_cambridge_care_bot, warmup_chroma_db
     warmup_chroma_db()
     return ask_cambridge_care_bot
 
-# 1. Process active inquiry FIRST and append to history so previous tabs collapse immediately
-if active_query:
-    if not st.session_state.inquiries or st.session_state.inquiries[-1]["question"] != active_query:
-        bot = get_care_bot()
-        response = bot(active_query)
-        st.session_state.inquiries.append({
-            "question": active_query,
-            "answer": response
-        })
-
-# 2. Display Initial Welcome Greeting if no inquiries yet
-if not st.session_state.inquiries:
+# ----------------- USER CHAT CONVERSATION (METHOD B) -----------------
+# 1. Display Initial Welcome Greeting if no chat history yet
+if not st.session_state.chat_history:
     with st.chat_message("assistant"):
-        st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can ask about our **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home care assessment**.")
+        st.write("Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\nHow can I support you today? You can tap any of the **Popular Inquiries** above, or ask below about **home care services**, **postcodes covered across Cambridge & South Cambs**, **funding pathways (NHS / Direct Payments)**, or **booking a free in-home assessment**.")
 
-# 3. Render Inquiries:
-# - ALL previous inquiries (0 to N-2) are IMMEDIATELY COLLAPSED (expanded=False)
-# - ONLY the latest active inquiry (N-1) is expanded in full view
-total_inquiries = len(st.session_state.inquiries)
-
-for idx, inq in enumerate(st.session_state.inquiries):
-    is_latest = (idx == total_inquiries - 1)
-    
-    if not is_latest:
-        # COLLAPSED TAB - ALWAYS COLLAPSED IMMEDIATELY WITH DYNAMIC KEY
-        with st.expander(f"Previous Inquiry: {inq['question']}", expanded=False, key=f"prev_inq_{idx}_{total_inquiries}"):
+# 2. Method B: All past questions folded inside ONE single clean bar
+total_chat = len(st.session_state.chat_history)
+if total_chat > 1:
+    past_count = total_chat - 1
+    with st.expander(f"📂 View Previous Questions ({past_count})", expanded=False):
+        for past in st.session_state.chat_history[:-1]:
             with st.chat_message("user"):
-                st.write(inq["question"])
+                st.write(past["question"])
             with st.chat_message("assistant"):
-                st.write(inq["answer"])
-    else:
-        # LATEST INQUIRY - ONLY THIS ACTIVE ONE IS EXPANDED!
-        with st.chat_message("user"):
-            st.write(inq["question"])
-        with st.chat_message("assistant"):
-            st.write(inq["answer"])
+                st.write(past["answer"])
+
+# 3. Method B: The latest active exchange is open in full view
+if total_chat >= 1:
+    latest = st.session_state.chat_history[-1]
+    with st.chat_message("user"):
+        st.write(latest["question"])
+    with st.chat_message("assistant"):
+        st.write(latest["answer"])
+
+# 4. Handle Custom User Query from Input Box
+user_input = st.chat_input("Ask about care services, locations, funding...")
+if user_input:
+    bot = get_care_bot()
+    # Immediately show user question
+    with st.chat_message("user"):
+        st.write(user_input)
+    # Generate and show response
+    with st.chat_message("assistant"):
+        with st.spinner("Consulting care guidelines..."):
+            response = bot(user_input)
+            st.write(response)
+    # Save to chat history
+    st.session_state.chat_history.append({
+        "question": user_input,
+        "answer": response
+    })
