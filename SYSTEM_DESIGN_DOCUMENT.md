@@ -146,9 +146,10 @@ if "warmed" not in st.session_state:
 ```
 
 #### Step 3: Zero-Reload Continuous Conversation Flow & Immediate Collapse
-Re-ordered the inquiry processing pipeline in `app.py` so that any active query (from chip buttons or typed input) is processed and appended to session state *before* rendering the conversation list, coupled with a dynamic React unmount key (`key=f"prev_inq_{idx}_{total_inquiries}"`). This guarantees:
+Re-ordered the inquiry processing pipeline in `app.py` so that any active query (from chip buttons or typed input) is processed and appended to session state *before* rendering the conversation list, coupled with a dynamic React unmount key (`key=f"prev_inq_{idx}_{total_inquiries}"`). Additionally, bottom container padding (`7rem`) and opaque backdrop styling were applied to `stBottom` to prevent chat input floating overlaps. This guarantees:
 1. **Immediate Collapse on 2nd Click**: Clicking Tab 2 immediately unmounts Tab 1 in React and collapses it into an accordion (`expanded=False`), keeping strictly the newest active tab expanded.
-2. **Zero-Reload**: Eliminated redundant `st.rerun()` calls on response generation, completely removing double-reload latency penalties on consecutive user queries.
+2. **Zero Duplicate Renders**: De-duplicated active query submissions.
+3. **Zero-Reload**: Eliminated redundant `st.rerun()` calls on response generation, completely removing double-reload latency penalties on consecutive user queries.
 
 #### Step 4: Upgraded High-Speed Model Pool
 Migrated the primary inference engine to Google’s newest **`gemini-3.1-flash-lite`** and **`gemini-3.1-flash-lite-preview`**, with automatic fallback:
