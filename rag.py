@@ -197,7 +197,7 @@ OFFICIAL_RESPONSES = {
     ),
     "assessment": (
         "Arranging a free, no-obligation home care assessment with Cambridge Care Services is a straightforward 3-step process:\n\n"
-        "1.  **Initial Consultation Call**: Contact our care coordinators on **07917 611 425** (Mon–Fri, 9:30am–9pm) to discuss immediate needs, care preferences, and visit schedules.\n"
+        "1.  **Initial Consultation Call**: Contact our care coordinators on **07917 611 425** (Mon-Fri, 9:30am-9pm) to discuss immediate needs, care preferences, and visit schedules.\n"
         "2.  **In-Person Home Assessment**: Our Registered Care Manager visits you and your family in Cambridge or South Cambridgeshire to assess daily routines, mobility, home safety, and medical history.\n"
         "3.  **Bespoke Care Plan & Quotation**: We draft a detailed, person-centered Care Plan and provide a transparent, itemized written quote.\n\n"
         "There is zero obligation, and for urgent post-hospital discharge situations, care can often commence within **24 to 48 hours**."
@@ -205,7 +205,7 @@ OFFICIAL_RESPONSES = {
     "careers": (
         "Cambridge Care Services is actively recruiting compassionate Care Assistants and Senior Support Workers across Cambridge and South Cambridgeshire:\n\n"
         "*   **Entry Requirements**: Compassion, empathy, right to work in the UK, valid UK driving licence with access to a reliable vehicle, and a clear Enhanced DBS check.\n"
-        "*   **Comprehensive Paid Training**: We fund your **Care Certificate** induction and provide paid shadow shifts alongside experienced senior carers—no prior experience required for entry roles.\n"
+        "*   **Comprehensive Paid Training**: We fund your **Care Certificate** induction and provide paid shadow shifts alongside experienced senior carers-no prior experience required for entry roles.\n"
         "*   **Pay & Benefits**: Competitive pay rates above the National Living Wage (with higher weekend and Bank Holiday rates), paid mileage allowance (45p/mile), paid travel time between visits, and guaranteed-hours contracts.\n\n"
         "To apply, visit our website careers section or contact our recruitment team directly on **07917 611 425**."
     ),
@@ -225,7 +225,7 @@ OFFICIAL_RESPONSES = {
     ),
     "out_of_area": (
         "Thank you for contacting Cambridge Care Services. We are a CQC-regulated home care provider focused exclusively "
-        "on **Cambridge City and South Cambridgeshire** (postcodes CB1–CB5, CB21–CB25).\n\n"
+        "on **Cambridge City and South Cambridgeshire** (postcodes CB1-CB5, CB21-CB25).\n\n"
         "We do not provide care services outside Cambridgeshire. If you need care support for a loved one "
         "living in Cambridge or surrounding South Cambs villages, please contact our team directly on **07917 611 425**."
     ),
@@ -233,7 +233,7 @@ OFFICIAL_RESPONSES = {
         "Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\n"
         "How can I support you and your family today? You can tap any of the **Popular Inquiries** above, or ask below about:\n"
         "*   **Home Care Services** (Personal care, Dementia support, Night care, Companionship, Live-in care)\n"
-        "*   **Areas Covered** (Sawston, Great & Little Shelford, Duxford, Cambridge postcodes CB1–CB5, CB21–CB25)\n"
+        "*   **Areas Covered** (Sawston, Great & Little Shelford, Duxford, Cambridge postcodes CB1-CB5, CB21-CB25)\n"
         "*   **Funding Support** (Direct Payments, NHS Continuing Healthcare, Attendance Allowance)\n"
         "*   **Arranging a Free In-Home Assessment** (Call our Sawston team on 07917 611 425)"
     )
@@ -266,30 +266,39 @@ def route_query_intent(query: str) -> str:
 
     # 5. Dementia / Alzheimer's Care
     if any(k in q for k in ["dementia", "demntia", "alzheimer", "alzheimers", "memory loss", "confusion"]):
-        # Check if query mentions a relative, location, or timing
         is_sawston = any(s in q for s in ["sawston", "swaston"])
-        has_hours = any(h in q for h in ["hour", "hours", "3pm", "6pm", "day", "afternoon", "time"])
+        loc_str = "in Sawston and South Cambridgeshire" if is_sawston else "across Cambridge and South Cambridgeshire"
+        
+        # Identify family relative if mentioned
         relative = "your loved one"
-        for rel in ["aunt", "mother", "father", "parent", "mum", "dad", "uncle", "husband", "wife"]:
+        pronoun = "her"
+        for rel, p in [
+            ("mother", "her"), ("mum", "her"), ("mom", "her"), ("aunt", "her"), ("grandmother", "her"), ("grandma", "her"), ("wife", "her"), ("sister", "her"),
+            ("father", "him"), ("dad", "him"), ("uncle", "him"), ("grandfather", "him"), ("grandpa", "him"), ("husband", "him"), ("brother", "him"),
+            ("parent", "them")
+        ]:
             if rel in q:
                 relative = f"your {rel.capitalize()}"
+                pronoun = p
                 break
         
-        if is_sawston or has_hours:
-            loc_str = "Sawston" if is_sawston else "Cambridge and South Cambridgeshire"
-            return (
-                f"Yes, absolutely. Cambridge Care Services can provide dedicated daytime care for {relative} in **{loc_str}**, "
-                f"including tailored visit schedules such as 3-hour afternoon support.\n\n"
-                f"Because our head office is located right in **Sawston** (15 Deal Grove, CB22), our local carers are based within the village, "
-                f"allowing us to provide consistent, reliable daytime support tailored to her daily routine:\n\n"
-                f"*   **Afternoon Routine & Companionship**: Late afternoons are an ideal window for care visits. Our carer can assist with preparing nutritious meals, afternoon tea, medication prompting, gentle mobility or garden walks, and reassuring companionship.\n"
-                f"*   **Empathetic Dementia Care**: We understand that late afternoons can sometimes trigger restlessness or anxiety (sundowning). Our carers are trained in gentle de-escalation, patient communication, and familiar routines to ensure she feels safe, calm, and respected at home.\n"
-                f"*   **Consistent, Familiar Carers**: We assign small, dedicated care teams so {relative} sees the same trusted, friendly carers rather than rotating strangers, fostering genuine emotional comfort.\n"
-                f"*   **Flexible Visit Lengths**: We offer unhurried visits tailored to her needs, whether that is 3 hours daily, specific weekdays, or additional weekend cover.\n\n"
-                f"To discuss {relative}'s specific routines and arrange a **free, no-obligation home assessment** with our Registered Care Manager, Mr. Rudrayya Mathapati, please call our Sawston office directly on **07917 611 425**."
-            )
-        return OFFICIAL_RESPONSES["dementia"]
+        possessive = "their" if pronoun == "them" else ("his" if pronoun == "him" else "her")
 
+        schedule_text = ""
+        if any(h in q for h in ["hour", "hours", "3pm", "6pm", "time", "schedule", "afternoon"]):
+            schedule_text = ", including tailored visit schedules (such as 2-to-3-hour daytime visits or dedicated afternoon blocks)"
+
+        return (
+            f"Yes, absolutely. Cambridge Care Services provides dedicated, person-centered **Dementia and Alzheimer's home care** for **{relative}** {loc_str}{schedule_text}.\n\n"
+            f"We understand how vital it is for families to find compassionate, dependable care for a loved one living with memory loss. Our service is designed to maintain {possessive} dignity, safety, and comfort in {possessive} own familiar home surroundings:\n\n"
+            f"*   **Familiar Surroundings & Consistent Routines**: Remaining in one's own home surrounded by cherished memories, pets, and lifelong routines is clinically proven to reduce stress, disorientation, and confusion for individuals living with dementia. Our carers maintain consistent daily schedules tailored to {possessive} personal rhythm.\n"
+            f"*   **Empathetic Daytime & Personal Care**: Our carers provide unhurried, patient support with morning routines, dignified bathing and dressing, preparing wholesome meals, afternoon tea, gentle mobility, stimulating memory activities, and reassuring companionship.\n"
+            f"*   **Late-Afternoon Reassurance & Sundowning Support**: We understand that late afternoons can sometimes trigger restlessness, anxiety, or confusion (sundowning). Our staff are specially trained in gentle de-escalation, empathetic communication, and calming evening settling routines to ensure {relative} feels safe, understood, and relaxed.\n"
+            f"*   **Small, Consistent Care Teams**: We assign a small, dedicated care team so {relative} sees the same trusted, friendly faces every day rather than rotating strangers, fostering genuine emotional comfort, continuity, and mutual trust.\n"
+            f"*   **Flexible Visit Schedules**: We tailor visit durations to your family's exact needs-whether that is 1-hour visits, unhurried 2-to-3-hour daytime blocks (such as 3:00 PM to 6:00 PM), waking nights, or round-the-clock live-in care.\n"
+            f"*   **Free In-Home Care Assessment**: Our Registered Care Manager, **Mr. Rudrayya Mathapati**, will visit your family home for an unhurried, no-obligation assessment to listen to your wishes and design a bespoke Dementia Support Plan.\n\n"
+            f"To discuss {relative}'s care needs or book a free assessment, please call our Sawston care team directly on **07917 611 425** (Mon-Fri 09:30-21:00, Sat 10:00-15:00, with 24/7 on-call manager support)."
+        )
     # 6. Specific covered locations
     covered_places = [
         "sawston", "swaston", "great shelford", "little shelford", "shelford", "stapleford", 
