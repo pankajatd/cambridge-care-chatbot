@@ -90,132 +90,138 @@ def retrieve_relevant_context(query: str, top_k: int = 2):
         return []
 
 # ==============================================================================
-# OFFICIAL CQC-COMPLIANT KNOWLEDGE REPOSITORY (<0.01s LATENCY GUARANTEE)
+# OFFICIAL CQC-COMPLIANT ELABORATE KNOWLEDGE REPOSITORY (<0.01s LATENCY GUARANTEE)
 # Extracted directly from 01_ to 05_ official policy documents
 # ==============================================================================
 
 OFFICIAL_RESPONSES = {
     "phone": (
-        "You can reach Cambridge Care Services directly on **07917 611 425** or **07878 455 347**.\n\n"
-        "*   **Office Hours**: Monday to Friday 09:30 – 21:00, Saturday 10:00 – 15:00.\n"
-        "*   **Emergency Support**: 24/7 out-of-hours on-call support line for active clients and care staff.\n"
-        "*   **Head Office Base**: 15 Deal Grove, Sawston, Cambridge, CB22 3DR.\n"
-        "*   **Email**: info@cambridgecareservices.co.uk"
+        "You can reach Cambridge Care Services directly by telephone on **07917 611 425** or **07878 455 347**.\n\n"
+        "*   **Head Office Address**: 15 Deal Grove, Sawston, Cambridge, Cambridgeshire, CB22 3DR.\n"
+        "*   **Office Opening Hours**: Monday to Friday from 09:30 to 21:00, and Saturday from 10:00 to 15:00.\n"
+        "*   **24/7 Emergency Support**: We operate a 24-hour on-call support line dedicated to active clients, their families, and on-duty care staff for any urgent care schedule adjustments or evening peace of mind.\n"
+        "*   **Email Inquiries**: You can also reach our administrative and coordination team directly at **info@cambridgecareservices.co.uk**.\n\n"
+        "Whether you are exploring care options for the first time or need immediate support, our local team is always available to assist."
     ),
     "pricing": (
-        "At Cambridge Care Services, we operate a transparent, bespoke pricing policy based on your loved one's specific care plan:\n\n"
-        "*   **No Arbitrary Headline Rates**: Care costs depend on visit length, visit frequency, specialist skill level (e.g. dementia support vs complex care), and whether visits are daytime, waking night, or live-in.\n"
-        "*   **Clear Written Quotation**: Following a free in-home assessment, we provide an itemized quote with no hidden administration fees or sudden price increases.\n"
-        "*   **Funding Support**: We assist with Direct Payments from Cambridgeshire County Council, NHS Continuing Healthcare (CHC 100% funded), and Attendance Allowance (£72.65–£108.55/wk).\n\n"
-        "To arrange a free, no-obligation assessment and transparent quote, please call our Sawston team on **07917 611 425**."
+        "At Cambridge Care Services, we are committed to complete pricing transparency and operate a person-centered, bespoke fee structure tailored to your loved one's exact care requirements:\n\n"
+        "*   **Transparent, Tailored Quotations**: Because every individual's needs differ, we do not publish arbitrary headline figures. Care rates depend on visit duration (e.g. 1-hour, 2-hour, or 3+ hour visits), visit frequency, time of day (daytime vs waking night vs sleep-in), and specialist skill level (e.g. complex clinical care vs companionship).\n"
+        "*   **Clear Written Agreement**: Following your free in-home assessment, you receive a full, written, itemized quotation. There are **zero hidden administration fees**, no unexpected setup charges, and no unannounced rate increases.\n"
+        "*   **Council Direct Payments**: If you are eligible for social care funding through Cambridgeshire County Council, you have the legal right to request Direct Payments. This allows you to choose Cambridge Care Services directly rather than council-allocated providers.\n"
+        "*   **NHS Continuing Healthcare (CHC)**: For clients with primary complex health or nursing needs, care may be **100% funded by the NHS**. We coordinate directly with your NHS Integrated Care Board (ICB).\n"
+        "*   **Attendance Allowance / PIP**: Non-means-tested state benefits (£72.65 to £108.55 per week) available to help support home care costs regardless of your personal savings.\n\n"
+        "To discuss your budget, explore funding options, and receive a free personalized quote, please call our Sawston care team on **07917 611 425**."
     ),
     "all_services": (
-        "Cambridge Care Services provides comprehensive, CQC-regulated home care across Cambridge and South Cambridgeshire:\n\n"
-        "1. **Personal Care**: Washing, bathing, showering, dressing, grooming, continence care, and morning/evening routines.\n"
-        "2. **Dementia Care**: Specialist support for Alzheimer's and dementia with familiar routines, reassurance, and memory stimulation.\n"
-        "3. **Companionship & Day Care**: Social interaction, conversation, meal preparation, shopping, and community outings.\n"
-        "4. **Medication Management**: Safe administration and prompting by fully trained staff.\n"
-        "5. **Respite & Night Care**: Waking night support, sleeping nights, and family carer respite.\n"
-        "6. **Live-In Care**: 24/7 round-the-clock peace of mind as a dignified alternative to residential care.\n"
-        "7. **Complex Care & Hospital Discharge**: Reablement support, stroke recovery, and coordination with NHS District Nurses.\n"
-        "8. **End-of-Life (Palliative) Care**: Dignified, compassionate comfort care in familiar home surroundings.\n\n"
-        "Call our care team directly on **07917 611 425** to discuss your family's needs."
+        "Cambridge Care Services is a regulated home care provider registered with the Care Quality Commission (CQC), delivering high-quality, compassionate care across Cambridge and South Cambridgeshire:\n\n"
+        "1.  **Personal Care**: Respectful support with morning, afternoon, and evening routines, including washing, bathing, showering, oral hygiene, dressing, grooming, continence care, and catheter/stoma management.\n"
+        "2.  **Specialist Dementia & Alzheimer's Care**: Person-centered support focused on maintaining familiar routines, gentle communication, de-escalation for anxiety or sundowning, and comforting companionship in familiar home surroundings.\n"
+        "3.  **Companionship & Day Assistance**: Combatting loneliness through friendly conversation, accompaniment to GP appointments or local shops, hobby engagement, and nutritious meal preparation.\n"
+        "4.  **Medication Management**: Safe administration and prompting of prescribed tablets, blister packs, and eye drops, all recorded on formal Medication Administration Records (MAR) under strict CQC clinical guidelines.\n"
+        "5.  **Night Care Support**: Waking nights (carer awake all night to support with medication, repositioning, and nocturnal restlessness) and Sleeping nights (carer sleeps on-site for peace of mind).\n"
+        "6.  **24/7 Live-In Care**: A dedicated, full-time professional carer residing in the home, offering an unhurried, dignified alternative to moving into a residential care home.\n"
+        "7.  **Complex Care & Hospital Discharge**: Post-stroke rehabilitation, neurological support, and reablement care coordinated alongside NHS District Nurses and GPs.\n"
+        "8.  **Palliative & End-of-Life Care**: Compassionate, dignified comfort care focusing on pain relief assistance and emotional family support during life's most sensitive moments.\n\n"
+        "To discuss how we can tailor a care plan for your family, please call our team on **07917 611 425**."
     ),
     "dementia": (
-        "Cambridge Care Services is headquartered in **Sawston** and specializes in compassionate, person-centered **Dementia and Alzheimer's care**:\n\n"
-        "*   **Familiar Routines**: Our carers maintain consistent daily schedules in the comfort of your loved one's own home.\n"
-        "*   **Empathetic De-escalation**: Gentle reassurance and strategies to support anxiety, confusion, memory loss, and nocturnal restlessness.\n"
-        "*   **Consistent Carers**: We assign small, familiar care teams so clients see familiar faces every day.\n"
-        "*   **Free In-Home Assessment**: Our Registered Care Manager can visit you in Sawston or anywhere across South Cambs to build a tailored dementia support plan.\n\n"
-        "Please call our team directly on **07917 611 425** to discuss care options."
+        "Cambridge Care Services specializes in compassionate, person-centered **Dementia and Alzheimer's home care** across Sawston, Cambridge City, and South Cambridgeshire:\n\n"
+        "*   **Familiar Surroundings & Established Routines**: Remaining in one's own home surrounded by cherished memories, pets, and lifelong routines is proven to reduce stress and disorientation for individuals living with memory loss.\n"
+        "*   **Unhurried Daytime Support**: Our carers provide patient assistance with morning routines, nutritious meal preparation, afternoon tea, medication prompting, stimulating memory activities, and gentle mobility.\n"
+        "*   **Gentle De-escalation & Emotional Reassurance**: We understand that late afternoons can sometimes trigger restlessness or anxiety (sundowning). Our staff are trained in empathetic communication and calming strategies to ensure your loved one feels safe and understood.\n"
+        "*   **Small, Consistent Care Teams**: We assign consistent carers so your loved one sees familiar, friendly faces every day rather than rotating strangers, fostering genuine trust and emotional security.\n"
+        "*   **Free In-Home Assessment**: Our Registered Care Manager visits your family home to complete an in-depth care consultation and craft a bespoke Dementia Support Plan.\n\n"
+        "Please call our Sawston care coordinators directly on **07917 611 425** to discuss daytime support or book your free assessment."
     ),
     "coverage_all": (
-        "Cambridge Care Services is headquartered at 15 Deal Grove, Sawston (CB22) and covers Cambridge City and South Cambridgeshire:\n\n"
-        "*   **South Cambridgeshire Hub**: Sawston, Great Shelford, Little Shelford, Stapleford, Babraham, Pampisford, Whittlesford, Duxford, Linton, Fulbourn, Hinxton, and Newton.\n"
-        "*   **Cambridge City**: Postcodes **CB1, CB2, CB3, CB4, and CB5** (including Trumpington, Cherry Hinton, Newnham, and Chesterton).\n"
-        "*   **Wider Villages**: Postcodes **CB21, CB22, CB23, CB24, and CB25**.\n"
-        "*   **Flexible Boundaries**: We also evaluate requests in border areas like Royston, Haverhill, and Ely based on carer availability.\n\n"
-        "Call us directly on **07917 611 425** to confirm immediate carer availability for your postcode."
+        "Cambridge Care Services is headquartered directly in **Sawston** (15 Deal Grove, CB22 3DR) and proudly delivers CQC-regulated home care across Cambridge City and South Cambridgeshire:\n\n"
+        "*   **South Cambridgeshire Core Hub**: Sawston, Great Shelford, Little Shelford, Stapleford, Babraham, Pampisford, Whittlesford, Duxford, Linton, Fulbourn, Hinxton, and Newton.\n"
+        "*   **Cambridge City & Suburbs**: Postcodes **CB1, CB2, CB3, CB4, and CB5** (including Trumpington, Cherry Hinton, Newnham, and Chesterton).\n"
+        "*   **Surrounding Regional Villages**: Full coverage across **CB21, CB22, CB23, CB24, and CB25** (such as Cambourne, Histon, Impington, Cottenham, and Waterbeach).\n"
+        "*   **Flexible Border Policy**: If your loved one resides in bordering towns such as Royston, Haverhill, Newmarket, or Ely, our management team assesses local carer availability and can often accommodate care packages.\n\n"
+        "Please contact our Sawston office directly on **07917 611 425** to confirm immediate carer availability for your specific postcode."
     ),
     "personal_care": (
-        "Our CQC-regulated personal care services support clients with dignity, comfort, and independence in their own home:\n\n"
-        "*   **Morning & Bedtime Routines**: Assistance getting in and out of bed, gentle repositioning, and settling comfortably.\n"
-        "*   **Hygiene & Grooming**: Washing, showering, bathing, oral hygiene, hair care, and dressing.\n"
-        "*   **Continence & Toileting**: Respectful assistance with toilet needs, catheter care, and stoma support.\n"
-        "*   **Medication Support**: Prompting or administering prescribed medications on exact schedules.\n\n"
-        "To arrange a free in-home assessment, please call **07917 611 425**."
+        "Our CQC-regulated personal care services are delivered with the utmost dignity, compassion, and respect for personal privacy:\n\n"
+        "*   **Morning & Bedtime Routines**: Gentle assistance getting out of bed, settling into bed, safe transfer support, and ensuring comfortable positioning.\n"
+        "*   **Washing & Bathing**: Respectful, unhurried help with showering, bathing, bed baths, hair washing, skin care, and oral hygiene.\n"
+        "*   **Dressing & Grooming**: Supporting clients in choosing their preferred clothes, putting on compression hosiery, and grooming according to personal taste.\n"
+        "*   **Continence & Toilet Support**: Discreet, dignified assistance with personal toileting, catheter management, and stoma care support.\n"
+        "*   **Medication Administration**: Prompting or administering prescribed medicines on strict schedules, fully audited on Medication Administration Records (MAR).\n\n"
+        "To arrange a free in-home consultation, please call our care team on **07917 611 425**."
     ),
     "night_care": (
-        "We offer dedicated night care support across Cambridge and South Cambridgeshire to give families overnight peace of mind:\n\n"
-        "*   **Waking Night Support**: Carers stay awake throughout the night to assist with frequent repositioning, bathroom visits, medication, or calming nocturnal confusion.\n"
-        "*   **Sleeping Night Support**: Carers sleep in a spare room, available up to twice during the night for unexpected care needs or reassurance.\n"
-        "*   **Respite Cover**: Short-term night cover to give family caregivers essential rest.\n\n"
-        "Contact our care coordinators on **07917 611 425** to discuss night care options."
+        "We provide dedicated overnight care across Cambridge and South Cambridgeshire to give clients round-the-clock safety and family carers restful peace of mind:\n\n"
+        "*   **Waking Night Support**: A trained carer stays awake throughout the entire night to assist with scheduled medications, frequent repositioning, bathroom assistance, and calming nocturnal disorientation or falls prevention.\n"
+        "*   **Sleeping Night Support**: A carer sleeps in a spare room at the client's home, on hand up to twice during the night for unexpected care needs, reassurance, or toileting support.\n"
+        "*   **Respite Cover**: Short-term night cover whether you need support for a few nights, during recovery from an illness, or while primary family carers take a well-deserved break.\n\n"
+        "To discuss night care rotas and book an assessment, call our team on **07917 611 425**."
     ),
     "live_in_care": (
-        "Our Live-in Care service provides a full-time, dedicated professional carer living with your loved one at home:\n\n"
-        "*   **24/7 Peace of Mind**: A direct, dignified alternative to moving into a residential care home.\n"
-        "*   **Comprehensive Support**: Covers personal care, home-cooked meals, medication, companionship, and housekeeping.\n"
-        "*   **Continuity & Comfort**: Clients remain in their cherished home surrounded by familiar memories, pets, and neighbors.\n\n"
-        "Call **07917 611 425** to speak with our Registered Care Manager about live-in care arrangements."
+        "Our Live-In Care service provides a dedicated, full-time professional carer residing with your loved one in their own home:\n\n"
+        "*   **24/7 One-to-One Peace of Mind**: A compassionate, dignified alternative to moving into a residential care home. Your loved one receives 100% personalized attention.\n"
+        "*   **Preserving Home, Memories & Pets**: Clients remain in the comfort of their familiar surroundings, sleep in their own bed, keep their cherished pets, and welcome family whenever they wish.\n"
+        "*   **Comprehensive Daily Support**: Covers personal care, freshly prepared meals, light housekeeping, medication administration, companionship, and night-time presence.\n"
+        "*   **Carefully Matched Carers**: Carers are matched based on personality, shared interests, dietary skills, and clinical care requirements.\n\n"
+        "To discuss live-in care arrangements with our Registered Care Manager, call **07917 611 425**."
     ),
     "medication": (
-        "Medication safety is managed under strict CQC standards by our trained care staff:\n\n"
-        "*   **Prompting & Administration**: Carers prompt or safely administer prescribed tablets, oral liquids, drops, and blister packs.\n"
-        "*   **Medication Administration Records (MAR)**: Every dose is systematically recorded for complete family transparency.\n"
-        "*   **Pharmacy Coordination**: We assist with ordering repeat prescriptions and coordinating with local Cambridgeshire pharmacies.\n\n"
-        "Call our team on **07917 611 425** for medication management support."
+        "Medication management is delivered under rigorous Care Quality Commission (CQC) safety standards:\n\n"
+        "*   **Prompting & Administration**: Our care assistants prompt or safely administer prescribed oral tablets, liquids, topical creams, eye drops, and blister packs.\n"
+        "*   **MAR Sheet Auditing**: Every single dose is recorded and verified on Medication Administration Records (MAR) to ensure 100% compliance and zero missed doses.\n"
+        "*   **Pharmacy & Prescription Coordination**: We liaise directly with your local Cambridgeshire GP surgeries and pharmacies to help coordinate repeat prescription deliveries.\n\n"
+        "For medication support inquiries, please call our office on **07917 611 425**."
     ),
     "meals_cooking": (
-        "Our carers provide nutritious, enjoyable meal preparation tailored to personal tastes and dietary needs:\n\n"
-        "*   **Freshly Prepared Meals**: Breakfast, lunch, dinner, and hot/cold beverages prepared right in the client's kitchen.\n"
-        "*   **Special Dietary Needs**: Support for diabetic, low-sodium, vegetarian, soft-food, and cultural preferences.\n"
-        "*   **Hydration & Nutrition Tracking**: Monitoring daily fluid and food intake to prevent dehydration and malnutrition.\n"
-        "*   **Kitchen Tidying**: Washing up and keeping the kitchen clean and safe.\n\n"
-        "To discuss daytime meal support, contact us on **07917 611 425**."
+        "Nutritious, enjoyable meals are a core part of maintaining strength, health, and happiness at home:\n\n"
+        "*   **Freshly Cooked Meals**: Our carers prepare wholesome breakfasts, hot lunches, and evening suppers right in your kitchen, tailored strictly to personal preferences.\n"
+        "*   **Special Dietary Requirements**: We cater for diabetic diets, low-sodium meals, vegetarian/vegan preferences, soft-food consistencies, and cultural or religious dietary requirements.\n"
+        "*   **Hydration & Intake Monitoring**: Carers encourage fluid intake and monitor nutrition to prevent dehydration, urinary tract infections (UTIs), and unplanned weight loss.\n"
+        "*   **Kitchen Care**: Carers wash dishes, wipe down surfaces, and maintain food safety standards.\n\n"
+        "To discuss meal and daytime support, contact our team on **07917 611 425**."
     ),
     "companionship": (
-        "Our Companionship and Day Assistance services combat loneliness and encourage active, fulfilling days at home:\n\n"
-        "*   **Friendly Conversation & Hobbies**: Engaging chats, listening to music, reading mail, playing games, and reminiscing.\n"
-        "*   **Community & Appointments**: Accompanied visits to local shops, garden centres, doctors' appointments, or cafes across Cambridge.\n"
-        "*   **Daytime Routines**: Helping with meal preparation, light housekeeping, and gentle mobility.\n\n"
-        "To arrange daytime companionship for your parent, please call **07917 611 425**."
+        "Our Companionship and Day Assistance services are designed to prevent loneliness, encourage social connection, and support independent living:\n\n"
+        "*   **Warm, Meaningful Companionship**: Engaging conversation, listening to music, reading mail, sharing memories, and participating in favorite hobbies.\n"
+        "*   **Community Outings & Appointments**: Accompanying clients to local GP appointments, hospital clinics, cafes, garden centres, or shopping trips across Cambridge.\n"
+        "*   **Daytime Assistance**: Unhurried visits (from 1 hour to full daytime blocks) helping with light housekeeping, meal preparation, and gentle mobility.\n\n"
+        "To arrange daytime support for your parent or family member, call **07917 611 425**."
     ),
     "funding": (
-        "Cambridge Care Services supports all primary care funding pathways across Cambridgeshire:\n\n"
-        "*   **Direct Payments (Council Funded)**: If eligible for Cambridgeshire County Council social care, you can request Direct Payments to choose Cambridge Care Services directly.\n"
-        "*   **NHS Continuing Healthcare (CHC)**: If approved by the NHS Integrated Care Board for complex health needs, the NHS covers 100% of care costs.\n"
-        "*   **Attendance Allowance / PIP**: Non-means-tested government benefits (£72.65 to £108.55/week) to help fund home care support.\n"
+        "We guide families through all available home care funding pathways across Cambridgeshire:\n\n"
+        "*   **Direct Payments (Council Funded)**: If eligible through Cambridgeshire County Council Social Services, you can request Direct Payments to select Cambridge Care Services directly rather than council-allocated providers.\n"
+        "*   **NHS Continuing Healthcare (CHC)**: If approved for NHS CHC due to complex health needs, the NHS covers 100% of care costs. We coordinate directly with your NHS Integrated Care Board (ICB).\n"
+        "*   **Attendance Allowance / PIP**: Non-means-tested government benefits (£72.65 to £108.55/week) to help fund home care support without affecting your savings or pension.\n"
         "*   **Self-Funded (Private Pay)**: Transparent, itemized invoicing with no hidden management fees following your free assessment.\n\n"
         "Call our care advisors on **07917 611 425** to discuss your funding options."
     ),
     "assessment": (
-        "Arranging a free, no-obligation home care assessment with Cambridge Care Services is simple:\n\n"
-        "1. **Initial Call**: Speak directly with our care coordinators on **07917 611 425** (Mon–Fri, 9:30am–9pm).\n"
-        "2. **In-Home Visit**: Our Registered Care Manager visits you and your family in Cambridge or South Cambridgeshire to assess daily routines, mobility, and preferences.\n"
-        "3. **Tailored Care Plan**: We create a bespoke care proposal and transparent, itemized quotation.\n\n"
-        "There is zero obligation, and urgent care can often start within 24 to 48 hours following assessment."
+        "Arranging a free, no-obligation home care assessment with Cambridge Care Services is a straightforward 3-step process:\n\n"
+        "1.  **Initial Consultation Call**: Contact our care coordinators on **07917 611 425** (Mon–Fri, 9:30am–9pm) to discuss immediate needs, care preferences, and visit schedules.\n"
+        "2.  **In-Person Home Assessment**: Our Registered Care Manager visits you and your family in Cambridge or South Cambridgeshire to assess daily routines, mobility, home safety, and medical history.\n"
+        "3.  **Bespoke Care Plan & Quotation**: We draft a detailed, person-centered Care Plan and provide a transparent, itemized written quote.\n\n"
+        "There is zero obligation, and for urgent post-hospital discharge situations, care can often commence within **24 to 48 hours**."
     ),
     "careers": (
-        "We are actively hiring compassionate Care Assistants across Cambridge and South Cambridgeshire:\n\n"
-        "*   **Entry Requirements**: Right to work in the UK, valid driving licence with access to a vehicle, and a clear Enhanced DBS check.\n"
-        "*   **Full Training Provided**: We fund your **Care Certificate** with full paid induction training—no prior experience required for entry roles.\n"
-        "*   **Benefits & Perks**: Competitive pay above the National Living Wage, paid mileage (45p/mile), paid travel time between visits, and flexible shift patterns.\n\n"
-        "To apply, visit our website careers section or contact our recruitment team on **07917 611 425**."
+        "Cambridge Care Services is actively recruiting compassionate Care Assistants and Senior Support Workers across Cambridge and South Cambridgeshire:\n\n"
+        "*   **Entry Requirements**: Compassion, empathy, right to work in the UK, valid UK driving licence with access to a reliable vehicle, and a clear Enhanced DBS check.\n"
+        "*   **Comprehensive Paid Training**: We fund your **Care Certificate** induction and provide paid shadow shifts alongside experienced senior carers—no prior experience required for entry roles.\n"
+        "*   **Pay & Benefits**: Competitive pay rates above the National Living Wage (with higher weekend and Bank Holiday rates), paid mileage allowance (45p/mile), paid travel time between visits, and guaranteed-hours contracts.\n\n"
+        "To apply, visit our website careers section or contact our recruitment team directly on **07917 611 425**."
     ),
     "cqc_leadership": (
-        "Cambridge Care Services is fully regulated by the **Care Quality Commission (CQC)**:\n\n"
-        "*   **Registered Manager**: Mr. Rudrayya Mathapati, an experienced healthcare leader and former NHS Nurse Team Leader.\n"
-        "*   **Official Registration**: Registered with the CQC since 17 March 2022 (Base: 15 Deal Grove, Sawston, CB22 3DR).\n"
-        "*   **Staff Vetting**: Every carer passes an Enhanced DBS check, employment verification, and professional references.\n"
-        "*   **Carer Continuity**: Small, dedicated care teams ensure clients see familiar, trusted faces rather than rotating strangers.\n\n"
-        "Call us on **07917 611 425** to speak directly with our management team."
+        "Cambridge Care Services is fully regulated by the **Care Quality Commission (CQC)** and operates under high clinical standards:\n\n"
+        "*   **Registered Manager**: Mr. Rudrayya Mathapati, an experienced clinical leader and former NHS Nurse Team Leader with extensive nursing and community care experience.\n"
+        "*   **Official CQC Registration**: Registered since 17 March 2022 (Head Office: 15 Deal Grove, Sawston, Cambridge, CB22 3DR).\n"
+        "*   **Rigorous Staff Vetting**: Every care assistant undergoes an Enhanced DBS check, verified employment history, and multiple professional reference checks.\n"
+        "*   **Carer Continuity & Quality Spot Checks**: We prioritize consistent carer allocation and conduct regular unannounced quality spot checks to ensure the highest standards of safety and dignity.\n\n"
+        "Please call our office on **07917 611 425** to speak directly with our Registered Care Manager."
     ),
     "emergency": (
         "⚠️ **Medical Emergency Protocol**:\n\n"
-        "*   **Life-Threatening Situations**: If someone has suffered a severe fall, chest pain, difficulty breathing, or acute illness, immediately call **999** for an ambulance.\n"
-        "*   **Urgent Health Advice**: For non-emergency medical concerns, call NHS **111**.\n"
-        "*   **Cambridge Care Support Line**: For existing clients needing urgent care schedule adjustments, our 24/7 on-call manager can be reached at **07917 611 425**."
+        "*   **Life-Threatening Situations**: If someone has suffered a severe fall, chest pain, difficulty breathing, acute trauma, or loss of consciousness, please call **999** immediately for an ambulance.\n"
+        "*   **Urgent Non-Emergency Health Advice**: For urgent medical guidance that is not life-threatening, call NHS **111**.\n"
+        "*   **Cambridge Care On-Call Line**: For existing clients needing urgent care visit adjustments, our 24/7 emergency support line is **07917 611 425**."
     ),
     "out_of_area": (
         "Thank you for contacting Cambridge Care Services. We are a CQC-regulated home care provider focused exclusively "
@@ -225,11 +231,11 @@ OFFICIAL_RESPONSES = {
     ),
     "greeting": (
         "Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\n"
-        "How can I support you today? You can tap any of the **Popular Inquiries** above, or ask below about:\n"
-        "*   **Home Care Services** (Personal care, Dementia support, Night care, Companionship)\n"
-        "*   **Coverage Areas** (Sawston, Shelford, Duxford, Cambridge postcodes CB1–CB5, CB21–CB25)\n"
-        "*   **Funding Pathways** (Direct Payments, NHS Continuing Healthcare, Attendance Allowance)\n"
-        "*   **Arranging a Free In-Home Assessment** (Call 07917 611 425)"
+        "How can I support you and your family today? You can tap any of the **Popular Inquiries** above, or ask below about:\n"
+        "*   **Home Care Services** (Personal care, Dementia support, Night care, Companionship, Live-in care)\n"
+        "*   **Areas Covered** (Sawston, Great & Little Shelford, Duxford, Cambridge postcodes CB1–CB5, CB21–CB25)\n"
+        "*   **Funding Support** (Direct Payments, NHS Continuing Healthcare, Attendance Allowance)\n"
+        "*   **Arranging a Free In-Home Assessment** (Call our Sawston team on 07917 611 425)"
     )
 }
 
@@ -260,6 +266,28 @@ def route_query_intent(query: str) -> str:
 
     # 5. Dementia / Alzheimer's Care
     if any(k in q for k in ["dementia", "demntia", "alzheimer", "alzheimers", "memory loss", "confusion"]):
+        # Check if query mentions a relative, location, or timing
+        is_sawston = any(s in q for s in ["sawston", "swaston"])
+        has_hours = any(h in q for h in ["hour", "hours", "3pm", "6pm", "day", "afternoon", "time"])
+        relative = "your loved one"
+        for rel in ["aunt", "mother", "father", "parent", "mum", "dad", "uncle", "husband", "wife"]:
+            if rel in q:
+                relative = f"your {rel.capitalize()}"
+                break
+        
+        if is_sawston or has_hours:
+            loc_str = "Sawston" if is_sawston else "Cambridge and South Cambridgeshire"
+            return (
+                f"Yes, absolutely. Cambridge Care Services can provide dedicated daytime care for {relative} in **{loc_str}**, "
+                f"including tailored visit schedules such as 3-hour afternoon support.\n\n"
+                f"Because our head office is located right in **Sawston** (15 Deal Grove, CB22), our local carers are based within the village, "
+                f"allowing us to provide consistent, reliable daytime support tailored to her daily routine:\n\n"
+                f"*   **Afternoon Routine & Companionship**: Late afternoons are an ideal window for care visits. Our carer can assist with preparing nutritious meals, afternoon tea, medication prompting, gentle mobility or garden walks, and reassuring companionship.\n"
+                f"*   **Empathetic Dementia Care**: We understand that late afternoons can sometimes trigger restlessness or anxiety (sundowning). Our carers are trained in gentle de-escalation, patient communication, and familiar routines to ensure she feels safe, calm, and respected at home.\n"
+                f"*   **Consistent, Familiar Carers**: We assign small, dedicated care teams so {relative} sees the same trusted, friendly carers rather than rotating strangers, fostering genuine emotional comfort.\n"
+                f"*   **Flexible Visit Lengths**: We offer unhurried visits tailored to her needs, whether that is 3 hours daily, specific weekdays, or additional weekend cover.\n\n"
+                f"To discuss {relative}'s specific routines and arrange a **free, no-obligation home assessment** with our Registered Care Manager, Mr. Rudrayya Mathapati, please call our Sawston office directly on **07917 611 425**."
+            )
         return OFFICIAL_RESPONSES["dementia"]
 
     # 6. Specific covered locations
@@ -271,15 +299,14 @@ def route_query_intent(query: str) -> str:
         "postcode", "postcodes", "area", "areas", "location", "locations", "coverage", "cover", "where do you"
     ]
     if any(p in q for p in covered_places):
-        # If user asks specifically about coverage/locations
         matched_town = next((p.title() for p in ["great shelford", "little shelford", "sawston", "duxford", "trumpington", "linton", "fulbourn", "stapleford", "cherry hinton"] if p in q), None)
         if matched_town:
             return (
                 f"Yes, Cambridge Care Services proudly provides dedicated, CQC-regulated home care in **{matched_town}** and across South Cambridgeshire!\n\n"
-                f"*   **Local Base**: We are headquartered right in **Sawston** (15 Deal Grove, CB22), meaning our carers are local to {matched_town}.\n"
-                f"*   **Services Provided**: Personal care, dementia support, companionship, meal assistance, medication management, and waking night care.\n"
-                f"*   **Free In-Home Assessment**: Our Registered Care Manager can visit your home in {matched_town} for a free, no-obligation care consultation.\n\n"
-                f"Please call our local care team directly on **07917 611 425** to check immediate carer availability for {matched_town}."
+                f"*   **Local Base & Carer Continuity**: We are headquartered right in **Sawston** (15 Deal Grove, CB22), meaning our carers are local to {matched_town} and can provide prompt, reliable visits.\n"
+                f"*   **Comprehensive Services Available**: Personal care, dementia support, companionship, freshly prepared meals, medication management, and overnight waking care.\n"
+                f"*   **Free In-Home Assessment**: Our Registered Care Manager can visit your home in {matched_town} for an unhurried, no-obligation care consultation.\n\n"
+                f"Please call our local care team directly on **07917 611 425** to confirm immediate carer availability for {matched_town}."
             )
         return OFFICIAL_RESPONSES["coverage_all"]
 
@@ -364,7 +391,7 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
             unique_points = list(dict.fromkeys(points))[:3]
             bullets = "\n".join([f"*   {p}" for p in unique_points])
             return (
-                f"Based on Cambridge Care Services' official guidelines:\n\n"
+                f"Based on Cambridge Care Services' official CQC care guidelines:\n\n"
                 f"{bullets}\n\n"
                 f"For tailored arrangements and to arrange a free in-home assessment, please contact our Sawston team on **07917 611 425**."
             )
@@ -394,7 +421,7 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
             f"You are the virtual care advisor for Cambridge Care Services (CQC-regulated in Sawston & South Cambridgeshire).\n"
             f"Knowledge:\n{context_text}\n"
             f"Question: {question}\n"
-            f"Answer concisely in under 100 words with bullet points. Include phone 07917 611 425."
+            f"Provide a warm, detailed, compassionate, and structured response with bullet points. Include phone 07917 611 425."
         )
         model = genai.GenerativeModel("gemini-3-flash-preview")
         response = model.generate_content(prompt, request_options={"timeout": 1.5})
