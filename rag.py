@@ -473,26 +473,61 @@ def route_query_intent(query: str) -> str:
     return route_care_inquiry(query)
 
 # ==============================================================================
-# MAIN RAG FUNCTION (<2.5s CEILING GUARANTEE)
+# MAIN RAG FUNCTION
 # ==============================================================================
+
+# In-memory query cache for instant responses on repeated queries
+_RESPONSE_CACHE = {}
 
 def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
     """
     Main Universal RAG function:
-    1. Universal Care Intelligence Engine delivers exact CQC response in <0.001s.
-    2. If novel question, tries Gemini with full 5-part healthcare prompt.
-    3. If Gemini is unavailable or times out, immediately synthesizes from CQC knowledge base.
-    Guarantees detailed, compassionate, CQC-compliant responses with zero crisp answers.
+    1. Direct Safety / Emergency and Out-of-Area intercept.
+    2. Primary: Google Gemini with ChromaDB knowledge chunks from official CQC documents.
+       Dynamically reads and answers every specific nuance (uncle, father, stroke, male nurse,
+       night hours, hospital discharge, Shelford, Cambridge, etc.)
+    3. Fallback: If Gemini hits an API rate limit or network timeout, gracefully falls back
+       to local CQC knowledge synthesis so the user never encounters an error.
     """
-    # Step 1: Universal Care Intelligence Engine (<0.001s)
-    routed = route_care_inquiry(question)
-    if routed:
-        return routed
+    clean_q = question.strip().lower()
 
-    # Step 2: Retrieve relevant context from ChromaDB
-    relevant_chunks = retrieve_relevant_context(question, top_k=3)
+    # 1. Emergency Safety Protocol Intercept
+    if any(k in clean_q for k in ["999", "emergency", "fell down", "severe fall", "bleeding", "unconscious", "heart attack", "difficulty breathing"]):
+        return (
+            "⚠️ **Medical Emergency Protocol**:\n\n"
+            "*   **Life-Threatening Situations**: If someone has suffered a severe fall, chest pain, difficulty breathing, acute trauma, or loss of consciousness, please call **999** immediately for an ambulance.\n"
+            "*   **Urgent Non-Emergency Health Advice**: For urgent medical guidance that is not life-threatening, call NHS **111**.\n"
+            "*   **Cambridge Care On-Call Line**: For existing clients needing urgent care visit adjustments, our 24/7 support line is **07917 611 425**."
+        )
 
-    # Step 3: Check API key
+    # 2. Out-of-Area Guardrail
+    out_of_area_cities = ["london", "manchester", "birmingham", "leeds", "glasgow", "edinburgh", "liverpool", "bristol", "sheffield", "cardiff", "belfast", "scotland", "wales"]
+    if any(city in clean_q for city in out_of_area_cities):
+        return (
+            "Thank you for contacting Cambridge Care Services. We are a CQC-regulated home care provider focused exclusively "
+            "on **Cambridge City and South Cambridgeshire** (postcodes CB1-CB5, CB21-CB25).\n\n"
+            "We do not provide care services outside Cambridgeshire. If you need care support for a loved one "
+            "living in Cambridge or surrounding South Cambs villages, please contact our team directly on **07917 611 425**."
+        )
+
+    # 3. Simple Greetings
+    if clean_q in ["hi", "hello", "hey", "good morning", "good afternoon", "good evening"]:
+        return (
+            "Hello! I am your virtual care advisor for **Cambridge Care Services**.\n\n"
+            "We provide compassionate, CQC-regulated home care across Cambridge and South Cambridgeshire. "
+            "How can I assist you today? Feel free to ask about our care services (such as dementia, Parkinson's, "
+            "hospital discharge reablement, or overnight care), visit schedules, funding, or booking a free in-home assessment."
+        )
+
+    # 4. Check in-memory exact cache
+    if clean_q in _RESPONSE_CACHE:
+        return _RESPONSE_CACHE[clean_q]
+
+    # 5. Retrieve top matching context chunks from ChromaDB
+    relevant_chunks = retrieve_relevant_context(question, top_k=4)
+    context_text = "\n\n---\n\n".join([f"[From {c['source']}]:\n{c['text']}" for c in relevant_chunks])
+
+    # 6. Check for Gemini API key
     if not api_key:
         api_key = os.environ.get("GEMINI_API_KEY", "")
         if not api_key:
@@ -502,30 +537,54 @@ def ask_cambridge_care_bot(question: str, api_key: str = None) -> str:
             except Exception:
                 pass
 
-    if not api_key or genai is None:
-        return route_care_inquiry("services")
+    # 7. PRIMARY: Generative AI (Gemini) with strict CQC healthcare prompt
+    if api_key and genai is not None:
+        try:
+            genai.configure(api_key=api_key)
 
-    # Step 4: High-detail Gemini call with 3.5s timeout
-    try:
-        genai.configure(api_key=api_key)
-        context_text = "\n\n---\n\n".join([f"[From {c['source']}]:\n{c['text']}" for c in relevant_chunks])
-        prompt = (
-            f"You are the senior virtual care advisor for Cambridge Care Services, a CQC-regulated home care provider headquartered in Sawston (15 Deal Grove, CB22 3DR) and serving Cambridge and South Cambridgeshire.\n\n"
-            f"Knowledge Base Context:\n{context_text}\n\n"
-            f"User Question: {question}\n\n"
-            f"Operating Instructions:\n"
-            f"Provide a warm, compassionate, and detailed healthcare response following this exact structure:\n"
-            f"1. Directly acknowledge the family member (e.g. your Father, Mother, Aunt, or loved one) and understand their specific health condition or care needs.\n"
-            f"2. Detail concrete in-home care routines (morning assistance, dignified personal care, fresh meal cooking, hydration, or night support).\n"
-            f"3. Explain CQC clinical safeguards (time-critical medication on MAR records, safe transfers/fall prevention, Enhanced DBS-checked carers).\n"
-            f"4. Confirm small, consistent care teams and our local base in Sawston / South Cambridgeshire.\n"
-            f"5. Warmly invite them to a free in-home care assessment with Registered Care Manager, Mr. Rudrayya Mathapati, and provide our phone number: 07917 611 425."
-        )
-        model = genai.GenerativeModel("gemini-1.5-flash")
-        response = model.generate_content(prompt, request_options={"timeout": 3.5})
-        if response and response.text and len(response.text.strip()) > 100:
-            return response.text.strip()
-    except Exception:
-        pass
+            system_prompt = f"""You are the friendly, compassionate, and professional AI care advisor for Cambridge Care Services, a CQC-regulated home care provider headquartered in Sawston (15 Deal Grove, CB22 3DR) and serving Cambridge and South Cambridgeshire.
 
-    return route_care_inquiry("services")
+OFFICIAL KNOWLEDGE BASE CONTEXT (FROM CQC SERVICE SPECIFICATIONS):
+{context_text}
+
+USER QUESTION:
+{question}
+
+INSTRUCTIONS:
+1. Directly answer every specific detail and nuance of the user's question (the family member e.g. Father, Uncle, Mother, Aunt; specific health conditions e.g. stroke, Parkinson's, dementia, hospital discharge; specific schedules e.g. daytime, 6 hours, overnight; specific location e.g. Shelford, Sawston, Cambridge; and staff requests e.g. male or female carer).
+2. Carer vs Nurse Distinction: Clarify that our team provides CQC-regulated Home Care Assistants and Support Workers who deliver daily living, personal care, medication prompting on MAR charts, mobility support, and companionship. For specialized medical/clinical nursing (e.g. IV lines or sterile catheter/wound care), we work in close direct coordination alongside the local NHS District Nursing team.
+3. Male/Female Carers: If they ask for a male carer or male nurse, confirm that we can specifically allocate a trained male care assistant to support him with personal care, dignity, and recovery routines.
+4. Overnight Support: If overnight care is mentioned, explain our Waking Night (awake all night) and Sleeping Night (on-site overnight reassurance) options.
+5. Reablement: If hospital discharge or stroke is mentioned, explain how our prompt reablement care helps them transition safely back home and regain independence.
+6. Local Base: Confirm our local presence and coverage across Cambridge and South Cambridgeshire from our Sawston office.
+7. Tone & Structure: Warm, empathetic, reassuring, and professional. Format with clean markdown bullet points (approx 160-220 words).
+8. Call to Action: Conclude with an invitation to book a free in-home care consultation with our team, mentioning phone: **07917 611 425** (Mon-Fri 09:30-21:00, Sat 10:00-15:00, with 24/7 on-call manager support).
+
+YOUR DETAILED RESPONSE:"""
+
+            # Active high-speed Gemini model pool
+            models_to_try = [
+                "gemini-3.1-flash-lite",
+                "gemini-flash-lite-latest",
+                "gemini-3.5-flash-lite",
+                "gemini-3-flash-preview"
+            ]
+
+            for model_name in models_to_try:
+                try:
+                    model = genai.GenerativeModel(model_name)
+                    response = model.generate_content(
+                        system_prompt,
+                        request_options={"timeout": 6.0}
+                    )
+                    if response and response.text and len(response.text.strip()) > 80:
+                        ans = response.text.strip()
+                        _RESPONSE_CACHE[clean_q] = ans
+                        return ans
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
+    # 8. FALLBACK: Graceful local CQC knowledge synthesis if API is unavailable
+    return route_care_inquiry(question)
