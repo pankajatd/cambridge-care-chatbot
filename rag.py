@@ -168,6 +168,60 @@ def extract_schedule(q: str):
             
     return has_night, has_day, has_live_in, has_respite, hours_mention
 
+def extract_special_requests(q: str):
+    """Detects specific user questions like male/female carers, nurse distinctions, pets, languages, urgency."""
+    notes = []
+    
+    # 1. Male Carer / Male Nurse request
+    if any(k in q for k in ["male nurse", "male carer", "male staff", "man carer", "male care assistant", "male support worker", "gentleman carer"]):
+        notes.append(
+            "*   **Male Carer Allocation for Dignity & Preference**: We fully respect client preferences for male or female carers. If your loved one feels more comfortable with a male carer for personal care, washing, dressing, and daily assistance, a trained **male care assistant / support worker** can be allocated to their care team."
+        )
+        if any(n in q for n in ["nurse", "nurses", "nursing"]):
+            notes.append(
+                "*   **Carer vs. Registered Nurse Distinction**: Our team members are CQC-regulated Home Care Assistants and Support Workers rather than acute hospital ward nurses. However, our Registered Care Manager, **Mr. Rudrayya Mathapati**, is an experienced former **NHS Clinical Nurse Team Leader**, and our carers coordinate directly alongside NHS District Nurses and GPs for any clinical procedures."
+            )
+    elif any(k in q for k in ["female carer", "female nurse", "female staff", "woman carer", "lady carer"]):
+        notes.append(
+            "*   **Female Carer Allocation**: We fully accommodate client preferences for female carers. For personal care routines, washing, dressing, and hygiene, a compassionate female carer will be dedicated to their care team to ensure total comfort and dignity."
+        )
+    elif any(k in q for k in ["nurse", "nurses", "nursing", "clinical nurse"]):
+        notes.append(
+            "*   **Carer vs. Registered Nurse Guidance**: Our care assistants provide non-clinical social care and medication management. Clinical nursing procedures (such as IV lines or sterile catheterization) are coordinated directly with your local NHS District Nursing team, overseen by our Registered Manager, **Mr. Rudrayya Mathapati**, a former NHS Clinical Nurse Team Leader."
+        )
+
+    # 2. Urgency / Fast Start
+    if any(k in q for k in ["how fast", "how quickly", "immediate", "urgent", "emergency start", "today", "tomorrow", "asap"]):
+        notes.append(
+            "*   **Rapid Onboarding Guarantee (24-48 Hours)**: For urgent situations, hospital discharges, or sudden care needs, our Care Manager can conduct an expedited in-home assessment and commence care visits within **24 to 48 hours**."
+        )
+
+    # 3. Pets
+    if any(k in q for k in ["dog", "cat", "pet", "pets", "animal", "walk the dog"]):
+        notes.append(
+            "*   **Pet-Friendly Home Care**: We understand that cherished pets are family members. Our carers are pet-friendly and can assist with pet feeding, letting pets out into the garden, or light companionship assistance alongside care routines."
+        )
+
+    # 4. Multilingual / Language
+    if any(k in q for k in ["language", "languages", "speak", "hindi", "punjabi", "urdu", "italian", "spanish", "polish", "gujarati"]):
+        notes.append(
+            "*   **Language & Cultural Matching**: We value cultural diversity and communication. Where specific language preferences exist, our care coordinators make every effort to match carers who share your language and cultural background."
+        )
+
+    # 5. Bank Holidays / Weekends
+    if any(k in q for k in ["christmas", "bank holiday", "bank holidays", "easter", "new year", "weekend only", "sundays"]):
+        notes.append(
+            "*   **365-Day Year-Round Cover**: Cambridge Care Services operates 365 days a year, including all Bank Holidays, Christmas Day, Boxing Day, and New Year. Regular care schedules are seamlessly maintained with higher weekend/holiday pay rates."
+        )
+
+    # 6. Carer Sickness / Replacement Cover
+    if any(k in q for k in ["sick", "ill", "carer calls in", "replacement", "running late", "holiday cover"]):
+        notes.append(
+            "*   **Guaranteed Replacement Cover**: If a regular carer is unwell or on leave, Cambridge Care Services guarantees seamless replacement cover by a briefed backup carer so your family experiences zero missed visits."
+        )
+
+    return notes
+
 def route_care_inquiry(query: str) -> str:
     q = query.lower().strip()
     
@@ -204,6 +258,8 @@ def route_care_inquiry(query: str) -> str:
     relative, pronoun, possessive = extract_relative(q)
     loc_text, is_sawston, town_name = extract_location(q)
     has_night, has_day, has_live_in, has_respite, hours_mention = extract_schedule(q)
+    special_notes = extract_special_requests(q)
+    special_bullets = ("\n" + "\n".join(special_notes) + "\n") if special_notes else ""
 
     # Contextual office proximity text
     office_intro = (
@@ -212,6 +268,13 @@ def route_care_inquiry(query: str) -> str:
         if is_sawston else
         f"Our experienced care team provides prompt, dependable, and consistent home visits {loc_text}, tailored to {possessive} personal care plan:\n\n"
     )
+
+    # Dynamic Opening phrase addressing special requests if asked
+    opening_ack = f"Yes, absolutely. Cambridge Care Services provides dedicated, person-centered care for **{relative}** {loc_text}"
+    if any(k in q for k in ["male nurse", "male carer", "male staff"]):
+        opening_ack = f"Yes, absolutely. Cambridge Care Services can accommodate your request for a **male carer** to support **{relative}** {loc_text}"
+    elif any(k in q for k in ["female carer", "female nurse"]):
+        opening_ack = f"Yes, absolutely. Cambridge Care Services can provide a **female carer** to support **{relative}** {loc_text}"
 
     # 4. Parkinson\'s Disease & Complex Neurological Care
     if any(k in q for k in ["parkinson", "parkinsons", "tremor", "rigidity", "neurological"]):
@@ -226,8 +289,9 @@ def route_care_inquiry(query: str) -> str:
             sched_note = ", including tailored daytime assistance and overnight care"
 
         return (
-            f"Yes, absolutely. Cambridge Care Services provides dedicated, person-centered care for **{relative}** {loc_text}{sched_note}.\n\n"
+            f"{opening_ack}{sched_note}.\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Specialist Parkinson\'s & Mobility Support**: Parkinson\'s symptoms vary significantly throughout the day and evening. Our carers assist with safe transfers, posture support, gentle mobility to reduce fall risks, and unhurried personal care that respects {possessive} pace and dignity.\n"
             f"*   **Time-Critical Medication Management**: In Parkinson\'s care, strict timing of prescribed medication is essential to minimize tremors and motor fluctuations (the 'on/off' effect). Our carers ensure prompt, accurate administration audited on Medication Administration Records (MAR) under strict CQC clinical guidelines.\n"
             f"*   **Dedicated Overnight Care (6+ Hours)**: For nocturnal restlessness, difficulty turning or repositioning in bed, nighttime anxiety, or bathroom assistance, our carers provide dedicated overnight care (both waking nights where a carer stays awake to assist continuously, and sleeping nights for on-site reassurance).\n"
@@ -249,6 +313,7 @@ def route_care_inquiry(query: str) -> str:
             f"Yes, absolutely. Cambridge Care Services provides dedicated, person-centered **Dementia and Alzheimer\'s home care** for **{relative}** {loc_text}{sched_note}.\n\n"
             f"We understand how vital it is for families to find compassionate, dependable care for a loved one living with memory loss. Our service is designed to maintain {possessive} dignity, safety, and comfort in {possessive} own familiar home surroundings:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Familiar Surroundings & Consistent Routines**: Remaining in one\'s own home surrounded by cherished memories, pets, and lifelong routines is clinically proven to reduce stress, disorientation, and confusion for individuals living with dementia. Our carers maintain consistent daily schedules tailored to {possessive} personal rhythm.\n"
             f"*   **Empathetic Daytime & Personal Care**: Our carers provide unhurried, patient support with morning routines, dignified bathing and dressing, preparing wholesome meals, afternoon tea, gentle mobility, stimulating memory activities, and reassuring companionship.\n"
             f"*   **Late-Afternoon Reassurance & Sundowning Support**: We understand that late afternoons can sometimes trigger restlessness, anxiety, or confusion (sundowning). Our staff are specially trained in gentle de-escalation, empathetic communication, and calming evening settling routines to ensure {relative} feels safe, understood, and relaxed.\n"
@@ -261,15 +326,15 @@ def route_care_inquiry(query: str) -> str:
     # 6. Stroke / Hospital Discharge / Reablement
     if any(k in q for k in ["stroke", "rehab", "reablement", "hospital discharge", "post-hospital", "discharged", "hospital", "surgery"]):
         return (
-            f"Yes, absolutely. Cambridge Care Services provides specialized post-stroke and hospital discharge reablement care for **{relative}** {loc_text}.\n\n"
-            f"Following a hospital discharge or stroke, structured home care is crucial to rebuild physical mobility, confidence, and independence:\n\n"
+            f"{opening_ack} following hospital discharge:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Mobility Rebuilding & Safe Transfers**: Assisting with safe bed-to-chair transfers, walking practice, and prescribed physiotherapy exercises to regain physical strength and prevent fall injuries.\n"
             f"*   **Dignified Personal Care**: Respectful assistance with morning and evening routines, washing, dressing, and hygiene tailored to {possessive} recovery pace.\n"
             f"*   **Clinical & Medication Coordination**: Timely medication prompting on Medication Administration Records (MAR) and direct collaboration with NHS District Nurses, Occupational Therapists (OTs), and GPs.\n"
             f"*   **Nutritious Meal Preparation & Hydration**: Freshly cooking balanced meals and monitoring fluid intake to support healing and strength.\n"
             f"*   **Rapid Onboarding Guarantee**: For urgent hospital discharge reablement, care visits can often commence within **24 to 48 hours** following an in-home assessment.\n\n"
-            f"To arrange a free hospital discharge consultation with our Registered Care Manager, **Mr. Rudrayya Mathapati**, please call **07917 611 425**."
+            f"To discuss {relative}\'s hospital discharge date and request specialized carer matching with our Registered Care Manager, **Mr. Rudrayya Mathapati**, please call **07917 611 425**."
         )
 
     # 7. Respite Care (Short term cover, holiday cover)
@@ -278,6 +343,7 @@ def route_care_inquiry(query: str) -> str:
             f"Yes, Cambridge Care Services provides dedicated, CQC-regulated **Respite Care** for **{relative}** {loc_text}.\n\n"
             f"We understand that family caregiving is both deeply rewarding and physically demanding. Our respite care service provides primary family carers with restful peace of mind while they take a well-deserved break or holiday:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Flexible Cover Periods**: Whether you require respite cover for a few hours a week, several full days, overnight support, or full 1-to-2-week live-in cover while your family travels, we adapt to your exact timetable.\n"
             f"*   **Seamless Continuity of Care**: Our carers strictly follow {possessive} established daily routines, dietary preferences, and medication schedules so {relative} experiences zero disruption in their familiar home surroundings.\n"
             f"*   **Comprehensive In-Home Assistance**: Covers personal hygiene, morning/evening dressing, fresh home cooking, companionship, and medication administration on MAR records.\n"
@@ -291,6 +357,7 @@ def route_care_inquiry(query: str) -> str:
         return (
             f"Yes, Cambridge Care Services provides dedicated, CQC-regulated overnight care for **{relative}** {loc_text} {timing_str}:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Waking Night Support**: A trained, compassionate carer stays awake throughout the entire night to assist with scheduled medications, frequent repositioning in bed, bathroom visits, nocturnal disorientation, and fall prevention.\n"
             f"*   **Sleeping Night Support**: A carer sleeps on-site in a spare bedroom, on hand up to twice during the night for unexpected care needs, reassurance, or toileting assistance.\n"
             f"*   **Respite for Family Carers**: Providing family members with uninterrupted, restful sleep knowing their loved one is in safe, professional hands.\n"
@@ -303,6 +370,7 @@ def route_care_inquiry(query: str) -> str:
         return (
             f"Our 24/7 Live-In Care service provides a dedicated, full-time professional carer residing with **{relative}** {loc_text}:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **24/7 One-to-One Peace of Mind**: A compassionate, dignified alternative to moving into a residential care home. Your loved one receives 100% personalized attention.\n"
             f"*   **Preserving Home, Memories & Pets**: Clients remain in their familiar home surroundings, sleep in their own bed, keep their pets, and welcome family whenever they wish.\n"
             f"*   **Comprehensive Daily Support**: Covers personal care, freshly prepared meals, light housekeeping, medication administration, companionship, and nighttime presence.\n"
@@ -315,8 +383,9 @@ def route_care_inquiry(query: str) -> str:
     if any(k in q for k in health_keywords):
         condition_mention = next((k.title() for k in health_keywords if k in q), "Physical Health & Mobility")
         return (
-            f"Yes, absolutely. Cambridge Care Services provides specialized, person-centered home care for **{relative}** {loc_text}, tailored to support **{condition_mention}** and daily wellbeing:\n\n"
+            f"{opening_ack}, tailored to support **{condition_mention}** and daily wellbeing:\n\n"
             f"{office_intro}"
+            f"{special_bullets}"
             f"*   **Un-Hurried Daily Personal Care**: Respectful, patient support with morning wake-up routines, bathing, showering, dressing, and skin care designed to accommodate physical stiffness, pain, or limited mobility.\n"
             f"*   **Mobility Assistance & Fall Prevention**: Safe transfer assistance (bed, chair, commode), safe positioning, and gentle mobility encouragement to promote independence while strictly guarding against fall hazards.\n"
             f"*   **Strict Medication Clinical Governance**: Prescription prompting and administration recorded on formal Medication Administration Records (MAR) under CQC clinical guidelines.\n"
@@ -326,7 +395,18 @@ def route_care_inquiry(query: str) -> str:
             f"To discuss {relative}\'s daily routine or book your free assessment, please call our Sawston care coordinators directly on **07917 611 425**."
         )
 
-    # 11. Personal Care (Washing, Bathing, Dressing, Continence)
+    # 11. Standalone Carer Matching / Gender / Special Request Inquiries
+    if special_notes:
+        return (
+            f"{opening_ack}:\n\n"
+            f"{office_intro}"
+            f"{special_bullets}"
+            f"*   **Tailored Care Planning**: Following an in-home assessment, we draft a comprehensive Care Plan that incorporates personal preferences, routines, and safety requirements.\n"
+            f"*   **Carer Continuity & Professional Standards**: All carers undergo Enhanced DBS checks, complete the Care Certificate, and participate in continuous professional development.\n\n"
+            f"To discuss your specific carer matching requirements with our Registered Care Manager, **Mr. Rudrayya Mathapati**, please call our Sawston office on **07917 611 425**."
+        )
+
+    # 12. Personal Care (Washing, Bathing, Dressing, Continence)
     if any(k in q for k in ["personal care", "washing", "bathing", "shower", "showering", "dressing", "grooming", "toileting", "continence"]):
         return (
             f"Cambridge Care Services delivers CQC-regulated personal care for **{relative}** {loc_text} with the highest dignity, compassion, and privacy:\n\n"
@@ -339,7 +419,7 @@ def route_care_inquiry(query: str) -> str:
             f"To arrange a free in-home consultation, please call our team on **07917 611 425**."
         )
 
-    # 12. Companionship & Day Assistance
+    # 13. Companionship & Day Assistance
     if any(k in q for k in ["companionship", "lonely", "loneliness", "outing", "outings", "day assistance", "befriending", "hobbies"]):
         return (
             f"Our Companionship and Day Assistance services for **{relative}** {loc_text} are designed to combat loneliness, encourage social connection, and support independent living:\n\n"
@@ -350,7 +430,7 @@ def route_care_inquiry(query: str) -> str:
             f"To arrange companionship visits, please contact our team on **07917 611 425**."
         )
 
-    # 13. Pricing, Costs, and Funding
+    # 14. Pricing, Costs, and Funding
     if any(k in q for k in ["cost", "costs", "price", "prices", "pricing", "rate", "rates", "charge", "charges", "how much", "fee", "fees", "quote", "pay for care", "funding", "direct payment", "direct payments", "nhs", "chc", "continuing healthcare", "attendance allowance", "pip"]):
         return (
             "At Cambridge Care Services, we operate a person-centered, bespoke fee structure with complete pricing transparency:\n\n"
@@ -362,7 +442,7 @@ def route_care_inquiry(query: str) -> str:
             "To discuss your budget, explore funding options, and receive a free personalized quote, please call our Sawston care team on **07917 611 425**."
         )
 
-    # 14. Assessment / Process / Booking
+    # 15. Assessment / Process / Booking
     if any(k in q for k in ["assessment", "arrange", "book", "start care", "consultation", "onboarding", "how do we begin"]):
         return (
             "Arranging a free, no-obligation home care assessment with Cambridge Care Services is a straightforward 3-step process:\n\n"
@@ -372,7 +452,7 @@ def route_care_inquiry(query: str) -> str:
             "There is zero obligation, and for urgent post-hospital discharge situations, care can often commence within **24 to 48 hours**."
         )
 
-    # 15. Careers & Recruitment
+    # 16. Careers & Recruitment
     if any(k in q for k in ["job", "jobs", "career", "careers", "hiring", "apply", "carer vacancy", "recruitment", "salary", "wage", "training"]):
         return (
             "Cambridge Care Services is actively recruiting compassionate Care Assistants and Senior Support Workers across Cambridge and South Cambridgeshire:\n\n"
@@ -382,7 +462,7 @@ def route_care_inquiry(query: str) -> str:
             "To apply, visit our website careers section or contact our recruitment team directly on **07917 611 425**."
         )
 
-    # 16. CQC Regulation & Leadership
+    # 17. CQC Regulation & Leadership
     if any(k in q for k in ["cqc", "regulated", "rating", "inspection", "manager", "mathapati", "rudrayya", "dbs", "background", "police"]):
         return (
             "Cambridge Care Services is fully regulated by the **Care Quality Commission (CQC)** and operates under high clinical standards:\n\n"
@@ -393,7 +473,7 @@ def route_care_inquiry(query: str) -> str:
             "Please call our office on **07917 611 425** to speak directly with our Registered Care Manager."
         )
 
-    # 17. Pure Location Inquiry
+    # 18. Pure Location Inquiry
     covered_places = [
         "sawston", "swaston", "great shelford", "little shelford", "shelford", "stapleford", 
         "babraham", "pampisford", "whittlesford", "duxford", "linton", "fulbourn", 
@@ -420,7 +500,7 @@ def route_care_inquiry(query: str) -> str:
             "Please contact our Sawston office directly on **07917 611 425** to confirm immediate carer availability for your specific postcode."
         )
 
-    # 18. All Services Overview & Comprehensive Catch-All
+    # 19. All Services Overview & Comprehensive Catch-All
     return (
         f"Cambridge Care Services is a regulated home care provider registered with the Care Quality Commission (CQC), delivering high-quality, compassionate care for **{relative}** {loc_text}:\n\n"
         f"{office_intro}"
