@@ -1,0 +1,23 @@
+name: Keep Streamlit Chatbot Awake
+
+on:
+  schedule:
+    # Runs every 30 minutes, 24/7/365 to reset Streamlit's 48-hour inactivity timer
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI anytime
+
+jobs:
+  keep-alive:
+    name: Ping Streamlit App
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Heartbeat Request
+        run: |
+          echo "Sending keep-alive ping to Cambridge Care Chatbot..."
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -L -m 30 "https://cambridge-care-chatbot.streamlit.app/")
+          echo "Received HTTP Status: $HTTP_STATUS at $(date -u)"
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 303 ] || [ "$HTTP_STATUS" -eq 302 ]; then
+            echo "✅ Heartbeat successful. Streamlit app is awake and active."
+          else
+            echo "⚠️ Heartbeat sent with status $HTTP_STATUS (Streamlit notified)."
+          fi
